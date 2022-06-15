@@ -1,54 +1,166 @@
-<div>
-  <div class="container px-4 py-5" id="icon-grid">
-    <h2 class="pb-2 border-bottom">Users list</h2>
-    <div
-      class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5"
-    >
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Username</th>
-            <th scope="col">Default set id</th>
-            <th scope="col">Name</th>
-            <th scope="col">Roles</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>root</td>
-            <td>@mdo</td>
-            <td>Admin</td>
-            <td>Admin</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-            <td>User</td>
-            <td>User</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Larry the Bird</td>
-            <td>17</td>
-            <td>@twitter</td>
-            <td>Common</td>
-            <td>
-              <div class="btn-group me-2" role="group" aria-label="First group">
-                <button type="button" class="btn btn-primary"><i-tabler name="edit"></i-tabler></button>
-                <button type="button" class="btn btn-primary"><i-tabler name="circle-plus"></i-tabler></button>
-                <button type="button" class="btn btn-primary"><i-tabler name="lock"></i-tabler></button>
-                <button type="button" class="btn btn-primary"><i-tabler name="key"></i-tabler></button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<div class="container px-4 py-5" id="icon-grid">
+  <nav class="navbar navbar-expand-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand text-success" href="user">Users List</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#homeNavbar"
+        aria-controls="#homeNavbar"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+      <i-tabler name="menu2"></i-tabler>
+      </button>
+      <div class="collapse navbar-collapse" id="homeNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active text-warning" aria-current="page"><i-tabler name="circle-plus"></i-tabler> new user</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active text-warning" aria-current="page"><i-tabler name="circle-plus"></i-tabler> add role to user</a>
+          </li>
+        </ul>
+      </div>      
+      <form class="d-flex" role="search">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+        />
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>      
     </div>
+  </nav>
+  
+  <div
+    class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5 table-responsive"
+  >
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Username</th>
+          <th scope="col">Default set id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Roles</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>root</td>
+          <td>@mdo</td>
+          <td>Adminis</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+          <td>User</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td>Larry the Bird</td>
+          <td>17</td>
+          <td>@twitter</td>
+          <td>Common</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>        
+        <tr>
+          <th scope="row">4</th>
+          <td>Mark</td>
+          <td>root</td>
+          <td>@mdo</td>
+          <td>Admin</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">5</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+          <td>User</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">6</th>
+          <td>Larry the Bird</td>
+          <td>17</td>
+          <td>@twitter</td>
+          <td>Common</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">7</th>
+          <td>Mark</td>
+          <td>root</td>
+          <td>@mdo</td>
+          <td>Admin</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">8</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+          <td>@fat</td>
+          <td>User</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">9</th>
+          <td>Larry the Bird</td>
+          <td>17</td>
+          <td>@twitter</td>
+          <td>Common</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">10</th>
+          <td>Larry the Bird</td>
+          <td>17</td>
+          <td>@twitter</td>
+          <td>Common</td>
+          <td>
+            <i-tabler name="lock"></i-tabler>
+            <i-tabler name="key"></i-tabler>
+          </td>
+        </tr>        
+      </tbody>
+    </table>
   </div>
 </div>
