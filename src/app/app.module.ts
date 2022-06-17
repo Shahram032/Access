@@ -24,6 +24,9 @@ import { RoleComponent } from './components/role/role/role.component';
 import { RoleAccessComponent } from './components/role/role-access/role-access.component';
 import { ChartComponent } from './components/org/chart/chart.component';
 import { InfoComponent } from './components/org/info/info.component';
+import { authInterceptorProviders } from './helper/interceptor';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 const icons = {
   IconCamera,
@@ -39,8 +42,9 @@ const icons = {
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, LoginComponent, UserComponent, WorkFlowComponent, RoleComponent, RoleAccessComponent, ChartComponent, InfoComponent],
-  imports: [BrowserModule, AppRoutingModule, TablerIconsModule.pick(icons)],
-  providers: [AccessService],
+  imports: [BrowserModule, FormsModule,HttpClientModule, AppRoutingModule, TablerIconsModule.pick(icons)],
+  providers: [AccessService, authInterceptorProviders, HttpClient],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+
+export class AppModule { }
