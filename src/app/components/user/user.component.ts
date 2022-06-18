@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/data-state.enum';
+import { UserStatus } from 'src/app/enum/user-status';
 import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-response';
 import { AccessService } from 'src/app/service/access.service';
@@ -15,6 +16,7 @@ export class UserComponent implements OnInit {
   constructor(private service: AccessService) { }
   appState$: Observable<AppState<CustomResponse>> | undefined;
   readonly DataState = DataState;
+  readonly UserStatus = UserStatus;
 
   ngOnInit(): void {
     this.appState$ = this.service.users$
