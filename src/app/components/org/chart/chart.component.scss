@@ -1,8 +1,18 @@
 mat-tree {
     font-family: calibri;
+    padding: 10px;
+    border: solid;
+    border-color: black;
+    border-width: 1px;
 }
 
 .mat-tree-node {
     max-height: 25px;
     min-height: 25px;
+    padding-right: 20px;
+    margin: 1px;
+    border-radius: 5px;
+    border: solid;
+    border-width: 1px;
+    border-color: rgb(108, 126, 184);
 }

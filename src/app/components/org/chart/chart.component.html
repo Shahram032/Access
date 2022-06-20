@@ -1,24 +1,103 @@
 <div class="container px-4 py-0" id="icon-grid">
-  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-      <button mat-icon-button disabled></button>
-      <label>
-        <input data-index="0" name="id" type="radio" value="0" />
-        <span></span>
-      </label>
-      {{node.name}}
-    </mat-tree-node>
-    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-      <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
-        <mat-icon class="mat-icon-rtl-mirror">
-          {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-        </mat-icon>
-      </button>
-      <label>
-        <input data-index="0" name="id" type="radio" value="0" />
-        <span></span>
-      </label>
-      {{node.name}}
-    </mat-tree-node>
-  </mat-tree>
+  <div class="row">
+    <div class="col-sm">
+      <div class="d-md-flex">
+        <div
+          class="overflow-scroll mb-3 mb-md-0 mr-md-3"
+          style="min-width: 50%; max-height: 500px; white-space: nowrap"
+        >
+          <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+              <button mat-icon-button disabled></button>
+              <label>
+                <input
+                  data-index="0"
+                  name="id"
+                  type="radio"
+                  value="0"
+                  (click)="setParent(node)"
+                />
+                <span></span>
+              </label>
+              {{ node.name }}
+            </mat-tree-node>
+            <mat-tree-node
+              *matTreeNodeDef="let node; when: hasChild"
+              matTreeNodePadding
+            >
+              <button
+                mat-icon-button
+                matTreeNodeToggle
+                [attr.aria-label]="'Toggle ' + node.name"
+              >
+                <mat-icon class="mat-icon-rtl-mirror">
+                  {{
+                    treeControl.isExpanded(node)
+                      ? "expand_more"
+                      : "chevron_right"
+                  }}
+                </mat-icon>
+              </button>
+              <label>
+                <input
+                  data-index="0"
+                  name="id"
+                  type="radio"
+                  value="0"
+                  (click)="setParent(node)"
+                />
+                <span></span>
+              </label>
+              {{ node.name }}
+            </mat-tree-node>
+          </mat-tree>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm">
+      <form class="row g-3 needs-validation" novalidate>
+        <div class="col-md-6">
+          <label for="validationCustom01" class="form-label"
+            >Parent set id</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="validationCustom01"
+            value="Mark"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+        <div class="col-md-6">
+          <label for="validationCustom02" class="form-label"
+            >Parent set name</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="validationCustom02"
+            value="Otto"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+        <div class="col-md-12">
+          <label for="validationCustom03" class="form-label">Set name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="validationCustom03"
+            required
+          />
+          <div class="invalid-feedback">Please provide a valid city.</div>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-sm btn-outline-primary" type="submit">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

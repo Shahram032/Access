@@ -1,4 +1,5 @@
-export interface Node {
-    name: string;
-    children?: Node[];    
+export interface OrgSet {
+    id: number;
+    title: string;
+    children?: OrgSet[];    
 }
