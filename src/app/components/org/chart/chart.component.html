@@ -19,7 +19,7 @@
                 />
                 <span></span>
               </label>
-              {{ node.name }}
+              {{ node.item }}
             </mat-tree-node>
             <mat-tree-node
               *matTreeNodeDef="let node; when: hasChild"
@@ -28,7 +28,7 @@
               <button
                 mat-icon-button
                 matTreeNodeToggle
-                [attr.aria-label]="'Toggle ' + node.name"
+                [attr.aria-label]="'Toggle ' + node.item"
               >
                 <mat-icon class="mat-icon-rtl-mirror">
                   {{
@@ -48,53 +48,78 @@
                 />
                 <span></span>
               </label>
-              {{ node.name }}
+              {{ node.item }}
             </mat-tree-node>
           </mat-tree>
         </div>
       </div>
     </div>
     <div class="col-sm">
-      <form class="row g-3 needs-validation" novalidate>
-        <div class="col-md-6">
+      <form
+        name="setForm"
+        class="row g-3 needs-validation"
+        novalidate
+        #f="ngForm"
+      >
+        <div class="col-md-2">
           <label for="validationCustom01" class="form-label"
             >Parent set id</label
           >
           <input
             type="text"
-            class="form-control"
-            id="validationCustom01"
-            value="Mark"
+            class="form-control text-center"
+            disabled
+            id="parentSetId"
+            name="id"
             required
+            [(ngModel)]="setForm.id"
           />
           <div class="valid-feedback">Looks good!</div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
           <label for="validationCustom02" class="form-label"
             >Parent set name</label
           >
           <input
             type="text"
             class="form-control"
-            id="validationCustom02"
-            value="Otto"
+            id="parentSetName"
+            name="title"
             required
+            [(ngModel)]="setForm.title"
           />
           <div class="valid-feedback">Looks good!</div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-2">
+          <label for="validationCustom03" class="form-label">Parent</label>
+          <button
+            class="btn btn-outline-success"
+            type="button"
+            (click)="saveParent()"
+          >
+            Save
+          </button>
+        </div>
+        <div class="col-md-10">
           <label for="validationCustom03" class="form-label">Set name</label>
           <input
             type="text"
             class="form-control"
-            id="validationCustom03"
+            id="children"
+            name="children"
             required
+            [(ngModel)]="setForm.children"
           />
           <div class="invalid-feedback">Please provide a valid city.</div>
         </div>
-        <div class="col-12">
-          <button class="btn btn-sm btn-outline-primary" type="submit">
-            Submit
+        <div class="col-2">
+          <label for="validationCustom03" class="form-label">New set</label>
+          <button
+            class="btn btn btn-outline-warning"
+            type="button"
+            (click)="saveChild()"
+          >
+            Save
           </button>
         </div>
       </form>
