@@ -1,24 +1,34 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import {
   MatTreeFlatDataSource,
   MatTreeFlattener,
 } from '@angular/material/tree';
-import { BehaviorSubject } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  of,
+  startWith,
+  tap,
+} from 'rxjs';
+import { DataState } from 'src/app/enum/data-state.enum';
+import { AppState } from 'src/app/interface/app-state';
+import { CustomResponse } from 'src/app/interface/custom-response';
+import { AccessService } from 'src/app/service/access.service';
 import { OrgSet } from './interface/node';
 import { SetForm } from './interface/set-form';
 
-/**
- * Node for to-do item
- */
+/*
 export class TodoItemNode {
   id!: number;
   children!: TodoItemNode[];
-  item!: string;
+  title!: string;
 }
+*/
 
-/** Flat to-do item node with expandable and level information */
 export class TodoItemFlatNode {
   id!: number;
   item!: string;
@@ -26,67 +36,62 @@ export class TodoItemFlatNode {
   expandable!: boolean;
 }
 
-/**
- * The Json object for to-do list data.
- */
-const TREE_DATA = [
-  {
-    id: 1,
-    item: 'وزارت کشور',
-    children: [
-      { id: 40, item: 'معاونت توسعه', children: [] },
-      { id: 40, item: 'معاونت سیاسی', children: [] },
-      { id: 40, item: 'معاونت اقتصادی', children: [] },
-    ],
-  },
-  { id: 2, item: 'وزارت رفاه', children: [] },
-  { id: 3, item: 'وزارت علوم', children: [] },
-];
+s: AccessService;
 
-/**
- * Checklist database, it can build a tree structured Json object.
- * Each node in Json object represents a to-do item or a category.
- * If a node is a category, it has children items and new items can be added under the category.
- */
+let TREE_DATA: OrgSet[];
+/*
+[
+  {
+    id: 18,
+    title: 'ROOT',
+    children: []
+  },
+];
+*/
+
 @Injectable()
 export class ChecklistDatabase {
-  dataChange = new BehaviorSubject<TodoItemNode[]>([]);
+  dataChange = new BehaviorSubject<OrgSet[]>([]);
 
-  get data(): TodoItemNode[] {
+  get data(): OrgSet[] {
     return this.dataChange.value;
   }
 
-  constructor() {
+  constructor(private service: AccessService) {
     this.initialize();
   }
 
   initialize() {
-    // Build the tree nodes from Json object. The result is a list of `TodoItemNode` with nested
-    //     file node as children.
-    const data = this.buildFileTree(TREE_DATA, 0);
-
-    // Notify the change.
-    this.dataChange.next(data);
+    this.service.orgRoot$().subscribe(
+      (x) => {
+        TREE_DATA = x.data.orgSets!;
+        const data = this.buildFileTree(TREE_DATA, 0);
+        this.dataChange.next(data);
+      },
+      (err) => console.error('Observer got an error: ' + err),
+      () => console.log('Observer got a complete notification')
+    );
   }
 
   /**
    * Build the file structure tree. The `value` is the Json object, or a sub-tree of a Json object.
    * The return value is the list of `TodoItemNode`.
    */
-  buildFileTree(obj: TodoItemNode[], level: number): TodoItemNode[] {
+  buildFileTree(obj: OrgSet[], level: number): OrgSet[] {
     return obj;
   }
 
   /** Add an item to to-do list */
-  insertItem(parent: TodoItemNode, name: string) {
+  insertItem(parent: OrgSet, name: string, id: number) {
     if (parent.children) {
-      parent.children.push({ item: name } as TodoItemNode);
+      parent.children.push({ id: id, title: name } as OrgSet);
       this.dataChange.next(this.data);
     }
   }
 
-  updateItem(node: TodoItemNode, name: string) {
-    node.item = name;
+  updateItem(node: OrgSet, name: string, id: number) {
+    node.title = name;
+    node.id = id;
     this.dataChange.next(this.data);
   }
 }
@@ -100,34 +105,43 @@ export class ChecklistDatabase {
   styleUrls: ['./chart.component.scss'],
   providers: [ChecklistDatabase],
 })
-export class ChartComponent {
-  /** Map from flat node to nested node. This helps us finding the nested node to be modified */
-  flatNodeMap = new Map<TodoItemFlatNode, TodoItemNode>();
-  nodeMap = new Map<string, TodoItemFlatNode>();
+export class ChartComponent implements OnInit {
+  appState$: Observable<AppState<CustomResponse>> | undefined;
+  rootState$: Observable<AppState<CustomResponse>> | undefined;
 
-  /** Map from nested node to flattened node. This helps us to keep the same object for selection */
-  nestedNodeMap = new Map<TodoItemNode, TodoItemFlatNode>();
+  ngOnInit(): void {
+    this.rootState$ = this.service.orgRoot$().pipe(
+      map((response) => {
+        return { dataState: DataState.LOADED_STATE, appData: response };
+      }),
+      tap((res) => {
+        TREE_DATA = res.appData.data.orgSets!;
+      }),
+      startWith({ dataState: DataState.LOADING_STATE }),
+      catchError(() => {
+        return of({ dataState: DataState.ERROR_STATE });
+      })
+    );
+  }
 
-  /** A selected parent node to be inserted */
+  flatNodeMap = new Map<number, OrgSet>();
+  nodeMap = new Map<number, TodoItemFlatNode>();
+  nestedNodeMap = new Map<OrgSet, TodoItemFlatNode>();
   selectedParent: TodoItemFlatNode | null = null;
-
-  /** The new item's name */
-  newItemName = '';
-
+  //newItemName = '';
   treeControl: FlatTreeControl<TodoItemFlatNode>;
+  treeFlattener: MatTreeFlattener<OrgSet, TodoItemFlatNode>;
+  dataSource: MatTreeFlatDataSource<OrgSet, TodoItemFlatNode>;
 
-  treeFlattener: MatTreeFlattener<TodoItemNode, TodoItemFlatNode>;
+  checklistSelection = new SelectionModel<TodoItemFlatNode>(true);
 
-  dataSource: MatTreeFlatDataSource<TodoItemNode, TodoItemFlatNode>;
-
-  /** The selection for checklist */
-  checklistSelection = new SelectionModel<TodoItemFlatNode>(
-    true /* multiple */
-  );
   setForm: SetForm = { id: 0, title: '', children: '' };
-  node!: TodoItemNode;
+  node!: OrgSet;
 
-  constructor(private _database: ChecklistDatabase) {
+  constructor(
+    private service: AccessService,
+    private _database: ChecklistDatabase
+  ) {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
       this.getLevel,
@@ -143,6 +157,19 @@ export class ChartComponent {
       this.treeFlattener
     );
 
+    this.rootState$ = this.service.orgRoot$().pipe(
+      map((response) => {
+        return { dataState: DataState.LOADED_STATE, appData: response };
+      }),
+      tap((res) => {
+        TREE_DATA = res.appData.data.orgSets!;
+      }),
+      startWith({ dataState: DataState.LOADING_STATE }),
+      catchError(() => {
+        return of({ dataState: DataState.ERROR_STATE });
+      })
+    );
+
     _database.dataChange.subscribe((data) => {
       this.dataSource.data = data;
     });
@@ -154,7 +181,7 @@ export class ChartComponent {
 
   isExpandable = (node: TodoItemFlatNode) => node.expandable;
 
-  getChildren = (node: TodoItemNode): TodoItemNode[] => node.children;
+  getChildren = (node: OrgSet): OrgSet[] => node.children!;
 
   hasChild = (_: number, _nodeData: TodoItemFlatNode) => _nodeData.expandable;
 
@@ -164,18 +191,18 @@ export class ChartComponent {
   /**
    * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
    */
-  transformer = (node: TodoItemNode, level: number) => {
+  transformer = (node: OrgSet, level: number) => {
     const existingNode = this.nestedNodeMap.get(node);
     const flatNode =
-      existingNode && existingNode.item === node.item
+      existingNode && existingNode.item === node.title
         ? existingNode
         : new TodoItemFlatNode();
-    flatNode.id = node.id;
-    flatNode.item = node.item;
+    flatNode.id = node.id!;
+    flatNode.item = node.title!;
     flatNode.level = level;
     flatNode.expandable = !!node.children?.length;
-    this.flatNodeMap.set(flatNode, node);
-    this.nodeMap.set(node.item, flatNode);
+    this.flatNodeMap.set(node.id!, node);
+    this.nodeMap.set(node.id!, flatNode);
     this.nestedNodeMap.set(node, flatNode);
     return flatNode;
   };
@@ -264,43 +291,58 @@ export class ChartComponent {
     return null;
   }
 
-  /** Select the category so we can insert the new item. */
-  addNewItem(node: TodoItemFlatNode, children: string) {
-    const parentNode = this.flatNodeMap.get(node);
-    this._database.insertItem(parentNode!, children);
+  addNewItem(node: TodoItemFlatNode, children: string, id: number) {
+    const parentNode = this.flatNodeMap.get(node.id!);
+    this._database.insertItem(parentNode!, children, id);
     this.treeControl.expand(node);
   }
 
-  /** Save the node to database */
-  saveNode(node: TodoItemFlatNode, itemValue: string) {
-    const nestedNode = this.flatNodeMap.get(node);
-    this._database.updateItem(nestedNode!, itemValue);
+  saveNode(node: TodoItemFlatNode, itemValue: string, id: number) {
+    const nestedNode = this.flatNodeMap.get(node.id!);
+    this._database.updateItem(nestedNode!, itemValue, id);
   }
 
-  setParent(node: TodoItemNode) {
-    this.setForm.id = node.id;
-    this.setForm.title = node.item;
+  setParent(node: OrgSet) {
+    this.setForm.id = node.id!;
+    this.setForm.title = node.item!;
     this.node = node;
   }
 
   saveParent() {
     if (this.setForm.id !== 0) {
       this.node.id = this.setForm.id;
-      this.node.item = this.setForm.title;
+      this.node.title = this.setForm.title;
     }
   }
 
   saveChild() {
     if (this.setForm.id !== 0) {
-      let a: OrgSet = { id: 100, title: 'new child', children: [] };
-      let b: TodoItemFlatNode = this.nodeMap.get(this.node.item)!
-      this.addNewItem(b,this.setForm.children);
-      //let b = this.flatNodeMap.get(this.node);
-      //console.log(b?.title);
-      //b?.children?.push(a);
-      //this.node.expandable = true;
-      //this.dataChange.next(this.dataSource.data);
-      //this.treeControl.expand(this.node);
+      let child: OrgSet = {
+        title: this.setForm.children,
+        parent: { id: this.node.id },
+      };
+      child = this.newChild(child);
     }
+  }
+
+  newChild(orgSet: OrgSet): any {
+    this.appState$ = this.service.orgSet$(orgSet).pipe(
+      map((response) => {
+        return { dataState: DataState.LOADED_STATE, appData: response };
+      }),
+      tap((res) => {
+        let a: OrgSet = res.appData.data.orgSet!;
+        let b: TodoItemFlatNode = this.nodeMap.get(this.node.id!)!;
+        b.expandable = true;
+        this.addNewItem(b, a.title!, a.id!);
+        
+        
+        this.saveNode(this.transformer(a, b.level), this.setForm.children, a.id!);
+      }),
+      startWith({ dataState: DataState.LOADING_STATE }),
+      catchError(() => {
+        return of({ dataState: DataState.ERROR_STATE });
+      })
+    );
   }
 }

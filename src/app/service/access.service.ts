@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { OrgSet } from '../components/org/chart/interface/node';
 import { CustomResponse } from '../interface/custom-response';
 import { LoginForm } from '../interface/login-form';
 import { PassedUser } from '../interface/passed-user';
@@ -18,6 +19,20 @@ export class AccessService {
   apiUrl: string = 'http://localhost:8085/api';
 
   constructor(private http: HttpClient) { }
+
+  orgRoot$ = () => <Observable<CustomResponse>>
+    this.http.get<CustomResponse>(`${this.apiUrl}/tools/org_set/root`)
+      .pipe(
+        tap(),
+        catchError(this.handleError)
+      );
+
+  orgSet$ = (orgSet: OrgSet) => <Observable<CustomResponse>>
+    this.http.post<CustomResponse>(`${this.apiUrl}/tools/org_set/save`, orgSet)
+      .pipe(
+        tap(),
+        catchError(this.handleError)
+      );
 
   users$ = <Observable<CustomResponse>>
     this.http.get<CustomResponse>(`${this.apiUrl}/security/users`)

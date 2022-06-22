@@ -63,7 +63,7 @@
       >
         <div class="col-md-2">
           <label for="validationCustom01" class="form-label"
-            >Parent set id</label
+            >ParentId</label
           >
           <input
             type="text"
@@ -119,6 +119,10 @@
             type="button"
             (click)="saveChild()"
           >
+          <ng-container *ngIf="(appState$ | async) as appState">
+            <span *ngIf="appState.dataState === 'LOADING_STATE'" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+          </ng-container>          
             Save
           </button>
         </div>
