@@ -7,20 +7,7 @@
           style="min-width: 50%; max-height: 500px; white-space: nowrap"
         >
           <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-              <button mat-icon-button disabled></button>
-              <label>
-                <input
-                  data-index="0"
-                  name="id"
-                  type="radio"
-                  value="0"
-                  (click)="setParent(node)"
-                />
-                <span></span>
-              </label>
-              {{ node.item }}
-            </mat-tree-node>
+            
             <mat-tree-node
               *matTreeNodeDef="let node; when: hasChild"
               matTreeNodePadding
@@ -46,7 +33,6 @@
                   value="0"
                   (click)="setParent(node)"
                 />
-                <span></span>
               </label>
               {{ node.item }}
             </mat-tree-node>

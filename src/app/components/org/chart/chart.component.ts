@@ -331,13 +331,19 @@ export class ChartComponent implements OnInit {
         return { dataState: DataState.LOADED_STATE, appData: response };
       }),
       tap((res) => {
+        
         let a: OrgSet = res.appData.data.orgSet!;
-        let b: TodoItemFlatNode = this.nodeMap.get(this.node.id!)!;
+        let parent: OrgSet = this.flatNodeMap.get(this.node.id!)!;
+        let b: TodoItemFlatNode = this.nodeMap.get(parent.id!)!;
         b.expandable = true;
-        this.addNewItem(b, a.title!, a.id!);
-        
-        
-        this.saveNode(this.transformer(a, b.level), this.setForm.children, a.id!);
+
+        if(!parent.children){
+          parent.children = [];
+          let b: TodoItemFlatNode = this.nodeMap.get(parent.id!)!;
+        }
+
+        this.addNewItem(b,a.title!,a.id!);
+
       }),
       startWith({ dataState: DataState.LOADING_STATE }),
       catchError(() => {
