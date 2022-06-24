@@ -34,6 +34,13 @@ export class AccessService {
         catchError(this.handleError)
       );
 
+  changeTitle$ = (orgSet: OrgSet) => <Observable<CustomResponse>>
+    this.http.post<CustomResponse>(`${this.apiUrl}/tools/org_set/change_title`, orgSet)
+      .pipe(
+        tap(),
+        catchError(this.handleError)
+      );
+
   users$ = <Observable<CustomResponse>>
     this.http.get<CustomResponse>(`${this.apiUrl}/security/users`)
       .pipe(
@@ -66,8 +73,8 @@ export class AccessService {
     window.sessionStorage.removeItem('TOKEN');
   }
 
-  saveToken(token: string): void{
-    window.sessionStorage.setItem('TOKEN',token);
+  saveToken(token: string): void {
+    window.sessionStorage.setItem('TOKEN', token);
   }
 
   getToken(): string | null {

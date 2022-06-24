@@ -108,6 +108,7 @@ export class ChecklistDatabase {
 export class ChartComponent implements OnInit {
   appState$: Observable<AppState<CustomResponse>> | undefined;
   rootState$: Observable<AppState<CustomResponse>> | undefined;
+  changeState$: Observable<AppState<CustomResponse>> | undefined;
 
   ngOnInit(): void {
     this.rootState$ = this.service.orgRoot$().pipe(
@@ -308,15 +309,27 @@ export class ChartComponent implements OnInit {
     this.node = node;
   }
 
-  saveParent() {
-    if (this.setForm.id !== 0) {
-      this.node.id = this.setForm.id;
-      this.node.title = this.setForm.title;
-    }
+  changeTitle(): any {
+    let orgSet: OrgSet = { id: this.setForm.id, title: this.setForm.title }
+    if (this.setForm.id !== 0)
+      this.changeState$ = this.service.changeTitle$(orgSet).pipe(
+        map((response) => {
+          return { dataState: DataState.LOADED_STATE, appData: response };
+        }),
+        tap((res) => {
+          let b: TodoItemFlatNode = this.nodeMap.get(orgSet.id!)!;
+          b.item = orgSet.title!;
+          this.saveNode(b,b.item,b.id);
+        }),
+        startWith({ dataState: DataState.LOADING_STATE }),
+        catchError(() => {
+          return of({ dataState: DataState.ERROR_STATE });
+        })
+      );
   }
 
   saveChild() {
-    if (this.setForm.id !== 0) {
+    if (this.setForm.id !== 0 && this.setForm.children !== '' ) {
       let child: OrgSet = {
         title: this.setForm.children,
         parent: { id: this.node.id },
@@ -326,23 +339,24 @@ export class ChartComponent implements OnInit {
   }
 
   newChild(orgSet: OrgSet): any {
+    orgSet.setLevel = this.nodeMap.get(this.setForm.id)!.level + 1;
     this.appState$ = this.service.orgSet$(orgSet).pipe(
       map((response) => {
         return { dataState: DataState.LOADED_STATE, appData: response };
       }),
       tap((res) => {
-        
+
         let a: OrgSet = res.appData.data.orgSet!;
         let parent: OrgSet = this.flatNodeMap.get(this.node.id!)!;
         let b: TodoItemFlatNode = this.nodeMap.get(parent.id!)!;
         b.expandable = true;
 
-        if(!parent.children){
+        if (!parent.children) {
           parent.children = [];
           let b: TodoItemFlatNode = this.nodeMap.get(parent.id!)!;
         }
 
-        this.addNewItem(b,a.title!,a.id!);
+        this.addNewItem(b, a.title!, a.id!);
 
       }),
       startWith({ dataState: DataState.LOADING_STATE }),

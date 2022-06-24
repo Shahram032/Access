@@ -48,60 +48,58 @@
         #f="ngForm"
       >
         <div class="col-md-2">
-          <label for="validationCustom01" class="form-label"
-            >ParentId</label
-          >
           <input
             type="text"
             class="form-control text-center"
             disabled
             id="parentSetId"
+            placeholder="ID"
             name="id"
             required
             [(ngModel)]="setForm.id"
           />
           <div class="valid-feedback">Looks good!</div>
         </div>
-        <div class="col-md-8">
-          <label for="validationCustom02" class="form-label"
-            >Parent set name</label
-          >
+        <div class="col-md-7">
           <input
             type="text"
             class="form-control"
             id="parentSetName"
             name="title"
+            placeholder="Set Title"
             required
             [(ngModel)]="setForm.title"
           />
           <div class="valid-feedback">Looks good!</div>
         </div>
-        <div class="col-md-2">
-          <label for="validationCustom03" class="form-label">Parent</label>
+        <div class="col-md-3">
           <button
-            class="btn btn-outline-success"
+            class="btn btn-outline-success w-100"
             type="button"
-            (click)="saveParent()"
+            (click)="changeTitle()"
           >
+          <ng-container *ngIf="(changeState$ | async) as changeState">
+            <span *ngIf="changeState.dataState === 'LOADING_STATE'" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+          </ng-container>           
             Save
           </button>
         </div>
-        <div class="col-md-10">
-          <label for="validationCustom03" class="form-label">Set name</label>
+        <div class="col-md-9">
           <input
             type="text"
             class="form-control"
             id="children"
             name="children"
+            placeholder="Child Title"
             required
             [(ngModel)]="setForm.children"
           />
           <div class="invalid-feedback">Please provide a valid city.</div>
         </div>
-        <div class="col-2">
-          <label for="validationCustom03" class="form-label">New set</label>
+        <div class="col-3">
           <button
-            class="btn btn btn-outline-warning"
+            class="btn btn-outline-warning w-100"
             type="button"
             (click)="saveChild()"
           >

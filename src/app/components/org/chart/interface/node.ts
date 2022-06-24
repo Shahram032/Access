@@ -5,5 +5,6 @@ export interface OrgSet {
     title?: string;
     item?: string;
     children?: OrgSet[];
-    parent?: OrgSet;  
+    parent?: OrgSet;
+    setLevel?: number;
 }
