@@ -15,14 +15,14 @@
       </button>
       <div class="collapse navbar-collapse" id="homeNavbar">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
+          <li class="nav-item" (click)="openUserModal(person)">
             <a class="nav-link active text-warning" aria-current="page">
               <i-tabler name="circle-plus"></i-tabler> new user
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link active text-warning" aria-current="page">
-              <i-tabler name="circle-plus"></i-tabler> add role to user
+          <li class="nav-item" (click)="openUserModal(template)">
+            <a class="nav-link active text-info" aria-current="page">
+              <i-tabler name="edit"></i-tabler> Edit
             </a>
           </li>
         </ul>
@@ -82,7 +82,17 @@
               <td>{{ user.creationDate }}</td>
               <td>{{ user.changePassDate }}</td>
               <td>
-                <span class="badge rounded-pill" [ngClass]="[user.status === UserStatus.ACTIVE ? 'bg-success' : (user.status === UserStatus.DEACTIVATE ? 'bg-danger' : 'bg-warning')]">{{ user.status }}</span>
+                <span
+                  class="badge rounded-pill"
+                  [ngClass]="[
+                    user.status === UserStatus.ACTIVE
+                      ? 'bg-success'
+                      : user.status === UserStatus.DEACTIVATE
+                      ? 'bg-danger'
+                      : 'bg-warning'
+                  ]"
+                  >{{ user.status }}</span
+                >
               </td>
               <td></td>
             </tr>
@@ -97,3 +107,272 @@
     </ng-container>
   </ng-container>
 </div>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h1 class="modal-title h1" id="userModalLabel">User</h1>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+      (click)="modalRef1.hide()"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <form class="row g-3">
+      <div class="col-md-3">
+        <input
+          type="text"
+          placeholder="Username"
+          class="form-control form-control-sm"
+          id="username"
+        />
+      </div>
+      <div class="col-md-3">
+        <div class="input-group input-group-sm mb-3">
+          <input
+            type="text"
+            placeholder="Person"
+            class="form-control form-control-sm"
+            id="person"
+          />
+          <span class="input-group-text lookup" id="inputGroup-sizing-sm" (click)="openPersonModal(person)">
+            <i-tabler name="address-book"></i-tabler>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group input-group-sm mb-3">
+          <input
+            type="text"
+            placeholder="User Name"
+            class="form-control form-control-sm"
+            id="username"
+          />
+          <span class="input-group-text lookup" id="inputGroup-sizing-sm">
+            <i-tabler name="address-book"></i-tabler>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <input
+          type="password"
+          placeholder="Password"
+          class="form-control form-control-sm"
+          id="password"
+        />
+      </div>
+      <div class="col-md-3">
+        <input
+          type="password"
+          placeholder="Retype Password"
+          class="form-control form-control-sm"
+          id="retypePassword"
+        />
+      </div>
+      <div class="col-md-3">
+        <select id="inputState" class="form-select form-select-sm">
+          <option value="DataState.ACTIVE" selected>Active</option>
+          <option value="DataState.DEACTIVATE">Deactivate</option>
+          <option value="DataState.SUSPEND">Susupend</option>
+          <option>...</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-sm btn-outline-primary w-100">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #person>
+  <div class="modal-header">
+    <h1 class="modal-title h1" id="userModalLabel">Person</h1>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+      (click)="modalRef2.hide()"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <form class="row g-3">
+      <div class="col-md-3">
+        <input
+          type="text"
+          placeholder="Username"
+          class="form-control form-control-sm"
+          id="username"
+        />
+      </div>
+      <div class="col-md-3">
+        <div class="input-group input-group-sm mb-3">
+          <input
+            type="text"
+            placeholder="Person"
+            class="form-control form-control-sm"
+            id="person"
+          />
+          <span class="input-group-text lookup" id="inputGroup-sizing-sm">
+            <i-tabler name="address-book"></i-tabler>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group input-group-sm mb-3">
+          <input
+            type="text"
+            placeholder="User Name"
+            class="form-control form-control-sm"
+            id="username"
+          />
+          <span class="input-group-text lookup" id="inputGroup-sizing-sm">
+            <i-tabler name="address-book"></i-tabler>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <input
+          type="password"
+          placeholder="Password"
+          class="form-control form-control-sm"
+          id="password"
+        />
+      </div>
+      <div class="col-md-3">
+        <input
+          type="password"
+          placeholder="Retype Password"
+          class="form-control form-control-sm"
+          id="retypePassword"
+        />
+      </div>
+      <div class="col-md-3">
+        <select id="inputState" class="form-select form-select-sm">
+          <option value="DataState.ACTIVE" selected>Active</option>
+          <option value="DataState.DEACTIVATE">Deactivate</option>
+          <option value="DataState.SUSPEND">Susupend</option>
+          <option>...</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-sm btn-outline-primary w-100">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="container px-4 py-0" id="icon-grid">
+    <nav class="navbar navbar-expand-sm">
+      <div class="container-fluid">
+        <a class="navbar-brand text-success" href="user">Users List</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#homeNavbar"
+          aria-controls="#homeNavbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <i-tabler name="menu2"></i-tabler>
+        </button>
+        <div class="collapse navbar-collapse" id="homeNavbar">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item" (click)="openUserModal(person)">
+              <a class="nav-link active text-warning" aria-current="page">
+                <i-tabler name="circle-plus"></i-tabler> new user
+              </a>
+            </li>
+            <li class="nav-item" (click)="openUserModal(template)">
+              <a class="nav-link active text-info" aria-current="page">
+                <i-tabler name="edit"></i-tabler> Edit
+              </a>
+            </li>
+          </ul>
+        </div>
+        <form class="d-flex" role="search">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+    <ng-container
+      *ngIf="appState$ | async as appState"
+      [ngSwitch]="appState.dataState"
+    >
+      <ng-container *ngSwitchCase="DataState.LOADING_STATE">
+        <div class="col-md-12 single-note-item text-center">
+          <div class="spinner-border text-info" role="status"></div>
+        </div>
+      </ng-container>
+      <div
+        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-2 table-responsive-xl"
+      >
+        <ng-container *ngSwitchCase="DataState.LOADED_STATE">
+          <table class="table table-sm" data-id-field="id">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Selected</th>
+                <th scope="col">Username</th>
+                <th scope="col">Name</th>
+                <th scope="col">Default set id</th>
+                <th scope="col">Create date</th>
+                <th scope="col">Password changed</th>
+                <th scope="col">Status</th>
+                <th data-radio="true"></th>
+              </tr>
+            </thead>
+            <tbody
+              *ngFor="let user of appState.appData?.data?.users; let i = index"
+            >
+              <tr>
+                <th scope="row">{{ i + 1 }}</th>
+                <td class="bs-checkbox">
+                  <label>
+                    <input data-index="0" name="id" type="radio" value="0" />
+                    <span></span>
+                  </label>
+                </td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.person.name + " " + user.person.family }}</td>
+                <td>{{ user.userSetId }}</td>
+                <td>{{ user.creationDate }}</td>
+                <td>{{ user.changePassDate }}</td>
+                <td>
+                  <span
+                    class="badge rounded-pill"
+                    [ngClass]="[
+                      user.status === UserStatus.ACTIVE
+                        ? 'bg-success'
+                        : user.status === UserStatus.DEACTIVATE
+                        ? 'bg-danger'
+                        : 'bg-warning'
+                    ]"
+                    >{{ user.status }}</span
+                  >
+                </td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-container>
+      </div>
+      <ng-container *ngSwitchCase="DataState.ERROR_STATE">
+        <div class="col-md-12 single-note-item text-center">
+          <div class="text-danger" role="status">Error...!</div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>  
+</ng-template>

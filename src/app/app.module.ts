@@ -10,7 +10,8 @@ import {
   IconHandStop,
   IconLock,
   IconKey,
-  IconMenu2
+  IconMenu2,
+  IconAddressBook,
 } from 'angular-tabler-icons/icons';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -31,6 +32,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTreeModule } from '@angular/material/tree';
 import { MaterialExampleModule } from 'src/material.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 const icons = {
   IconCamera,
@@ -41,36 +43,41 @@ const icons = {
   IconHandStop,
   IconLock,
   IconKey,
-  IconMenu2
+  IconMenu2,
+  IconAddressBook,
 };
 
 @NgModule({
   declarations: [
-    AppComponent, 
-    HomeComponent, 
-    LoginComponent, 
-    UserComponent, 
-    WorkFlowComponent, 
-    RoleComponent, 
-    RoleAccessComponent, 
-    ChartComponent, 
-    InfoComponent
+    AppComponent,
+    HomeComponent,
+    LoginComponent,
+    UserComponent,
+    WorkFlowComponent,
+    RoleComponent,
+    RoleAccessComponent,
+    ChartComponent,
+    InfoComponent,
   ],
   imports: [
-    BrowserModule, 
+    BrowserModule,
     FormsModule,
-    HttpClientModule, 
-    AppRoutingModule, 
-    TablerIconsModule.pick(icons), 
+    HttpClientModule,
+    AppRoutingModule,
+    TablerIconsModule.pick(icons),
     BrowserAnimationsModule,
     MatNativeDateModule,
     MatTreeModule,
     MaterialExampleModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ModalModule.forRoot(),
   ],
-  providers: [AccessService, authInterceptorProviders, HttpClient],
+  providers: [
+    AccessService,
+    authInterceptorProviders,
+    HttpClient,
+  ],
   bootstrap: [AppComponent],
 })
-
-export class AppModule { }
+export class AppModule {}
