@@ -1,23 +1,51 @@
 <body class="d-flex text-center bg-secondary">
   <form name="loginForm" #f="ngForm" class="form-login border rounded">
-    <img src="../assets/svg/lock.svg" alt="" height="54" width="54" class="mb-4" />
+    <img
+      src="../assets/svg/lock.svg"
+      alt=""
+      height="54"
+      width="54"
+      class="mb-4"
+    />
     <h4 class="h4 mb-3 font-weight-normal">Access Control Login</h4>
     <label for="username" class="sr-only">User Name</label>
-    <input type="text" id="username" name="username" class="form-control form-control-sm mb-2" [(ngModel)]="loginForm.username" placeholder="User Name"
-      required autofocus />
+    <input
+      type="text"
+      id="username"
+      name="username"
+      class="form-control form-control-sm mb-2"
+      [(ngModel)]="loginForm.username"
+      placeholder="User Name"
+      required
+      autofocus
+    />
     <label for="password" class="sr-only">Password</label>
-    <input type="password" id="password" name="password" class="form-control form-control-sm mb-2" [(ngModel)]="loginForm.password"
-      placeholder="Password" required />
+    <input
+      type="password"
+      id="password"
+      name="password"
+      class="form-control form-control-sm mb-2"
+      [(ngModel)]="loginForm.password"
+      placeholder="Password"
+      required
+    />
     <div class="checkbox mb-3">
       <label> <input type="checkbox" value="remember-me" /> Remember me </label>
     </div>
-    <button type="button" class="btn btn-outline-primary w-100" (click)="login()">
-      <ng-container *ngIf="(appState$ | async) as appState">
-        <span *ngIf="appState.dataState === 'LOADING_STATE'" class="spinner-border spinner-border-sm" role="status"
-          aria-hidden="true"></span>
+    <button
+      type="button"
+      class="btn btn-outline-primary w-100"
+      (click)="login()"
+    >
+      <ng-container *ngIf="appState$ | async as appState">
+        <span
+          *ngIf="appState.dataState === 'LOADING_STATE'"
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
       </ng-container>
       Login
     </button>
-
   </form>
 </body>

@@ -1,5 +1,6 @@
 import { OrgSet } from "../components/org/chart/interface/node";
 import { PassedUser } from "./passed-user";
+import { UserRole } from "./role";
 import { AppUser } from "./user";
 
 export interface CustomResponse {
@@ -9,5 +10,5 @@ export interface CustomResponse {
     reason: string;
     message: string;
     developerMessage: string;
-    data: { passedUser?: PassedUser, users?: AppUser[], orgSet?: OrgSet ,orgSets?: OrgSet[]};
+    data: { passedUser?: PassedUser, users?: AppUser[], orgSet?: OrgSet ,orgSets?: OrgSet[],userRoles?: UserRole[]};
 }

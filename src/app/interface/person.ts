@@ -2,6 +2,7 @@ export interface Person {
     id: number;
     name: string;
     family: string;
+    perName: string;
     nationalCode: string;
     identityCode: number;
     birthDate: Date;

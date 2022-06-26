@@ -9,51 +9,61 @@ import { PassedUser } from '../interface/passed-user';
 const API = 'http://localhost:8085/api/';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };
 
 @Injectable()
 export class AccessService {
-
   data: string = '';
   apiUrl: string = 'http://localhost:8085/api';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  orgRoot$ = () => <Observable<CustomResponse>>
-    this.http.get<CustomResponse>(`${this.apiUrl}/tools/org_set/root`)
-      .pipe(
-        tap(),
-        catchError(this.handleError)
-      );
+  orgRoot$ = () =>
+    <Observable<CustomResponse>>(
+      this.http
+        .get<CustomResponse>(`${this.apiUrl}/tools/org_set/root`)
+        .pipe(tap(), catchError(this.handleError))
+    );
 
-  orgSet$ = (orgSet: OrgSet) => <Observable<CustomResponse>>
-    this.http.post<CustomResponse>(`${this.apiUrl}/tools/org_set/save`, orgSet)
-      .pipe(
-        tap(),
-        catchError(this.handleError)
-      );
+  orgSet$ = (orgSet: OrgSet) =>
+    <Observable<CustomResponse>>(
+      this.http
+        .post<CustomResponse>(`${this.apiUrl}/tools/org_set/save`, orgSet)
+        .pipe(tap(), catchError(this.handleError))
+    );
 
-  changeTitle$ = (orgSet: OrgSet) => <Observable<CustomResponse>>
-    this.http.post<CustomResponse>(`${this.apiUrl}/tools/org_set/change_title`, orgSet)
-      .pipe(
-        tap(),
-        catchError(this.handleError)
-      );
+  changeTitle$ = (orgSet: OrgSet) =>
+    <Observable<CustomResponse>>(
+      this.http
+        .post<CustomResponse>(
+          `${this.apiUrl}/tools/org_set/change_title`,
+          orgSet
+        )
+        .pipe(tap(), catchError(this.handleError))
+    );
 
-  users$ = <Observable<CustomResponse>>
-    this.http.get<CustomResponse>(`${this.apiUrl}/security/users`)
-      .pipe(
-        tap(),
-        catchError(this.handleError)
-      );
+  users$ = <Observable<CustomResponse>>(
+    this.http
+      .get<CustomResponse>(`${this.apiUrl}/security/users`)
+      .pipe(tap(), catchError(this.handleError))
+  );
 
-  passedUser$ = (login: LoginForm) => <Observable<CustomResponse>>
-    this.http.post<CustomResponse>(`${this.apiUrl}/login`, login)
-      .pipe(
-        tap(),
-        catchError(this.handleError)
-      );
+  deleteUserRole$ = (userId: number, roleId: number) =>
+    <Observable<CustomResponse>>(
+      this.http
+        .delete<CustomResponse>(
+          `${this.apiUrl}/security/user/roles/delete/${userId}/${roleId}`
+        )
+        .pipe(tap(console.log), catchError(this.handleError))
+    );
+
+  passedUser$ = (login: LoginForm) =>
+    <Observable<CustomResponse>>(
+      this.http
+        .post<CustomResponse>(`${this.apiUrl}/login`, login)
+        .pipe(tap(), catchError(this.handleError))
+    );
 
   isLoggedIn(): string | null {
     return window.sessionStorage.getItem('TOKEN');
@@ -66,7 +76,10 @@ export class AccessService {
   }
 
   login(username: string, password: string): Observable<any> {
-    return this.http.get(API + 'login?username=' + username + '&password=' + password, httpOptions);
+    return this.http.get(
+      API + 'login?username=' + username + '&password=' + password,
+      httpOptions
+    );
   }
 
   logout() {
@@ -84,5 +97,4 @@ export class AccessService {
   handleError(handleError: any): Observable<never> {
     return throwError('');
   }
-
 }
