@@ -12,7 +12,9 @@ import {
   IconKey,
   IconMenu2,
   IconAddressBook,
-  IconTrash
+  IconTrash,
+  IconDeviceFloppy,
+  IconSquareX
 } from 'angular-tabler-icons/icons';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -47,6 +49,8 @@ const icons = {
   IconMenu2,
   IconAddressBook,
   IconTrash,
+  IconDeviceFloppy,
+  IconSquareX
 };
 
 @NgModule({
