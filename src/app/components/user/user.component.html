@@ -202,65 +202,118 @@
         </button>
       </div>
     </form>
+
+    <ng-container
+      *ngIf="userRolesState$ | async as appState"
+      [ngSwitch]="appState.dataState"
+    >
+      <div class="container px-4 py-0" id="icon-grid">
+        <div
+          _ngcontent-gob-c88=""
+          class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-2 table-responsive-xl"
+        >
+          <table class="table table-sm" data-id-field="id">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <i-tabler
+                    name="circle-plus"
+                    class="text-info"
+                    [hidden]="dtlTblMode === TableMode.INSERT"
+                    (click)="insertDtl()"
+                  ></i-tabler>
+                  <i-tabler
+                    name="circle-plus"
+                    class="text-secondary"
+                    [hidden]="dtlTblMode !== TableMode.INSERT"
+                  ></i-tabler>
+                </th>
+                <th scope="col">RoleName</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Set</th>
+                <th scope="col">Aassign Date</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let role of selectedUser.userRoles; let i = index">
+              <tr>
+                <th scope="row">{{ i + 1 }}</th>
+                <td>{{ role.appRole!.roleName }}</td>
+                <td>{{ role.priority }}</td>
+                <td>{{ role.orgSet.title }}</td>
+                <td>{{ role.assignDate }}</td>
+                <td>
+                  <i-tabler
+                    name="trash"
+                    style="color: red"
+                    (click)="deleteUserRole(selectedUser, role)"
+                  ></i-tabler>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="col-md-2">
+      <div class="input-group input-group-sm"></div>
+    </div>
+    <div class="row g-3" [hidden]="dtlTblMode !== TableMode.INSERT">
+      <div class="col-md-4">
+        <div class="input-group input-group-sm mb-3">
+          <input
+            type="text"
+            placeholder="Role"
+            class="form-control form-control-sm"
+            [(ngModel)]="newRole!.appRole!.roleName!"
+            [disabled]="dtlTblMode !== TableMode.INSERT"
+          />
+          <span class="input-group-text lookup" id="inputGroup-sizing-sm">
+            <i-tabler name="address-book" (click)="openRole(role)"></i-tabler>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="input-group input-group-sm mb-3">
+          <input
+            type="text"
+            placeholder="Set"
+            class="form-control form-control-sm"
+            [(ngModel)]="newRole!.orgSet!.title!"
+            [disabled]="dtlTblMode !== TableMode.INSERT"
+          />
+          <span class="input-group-text lookup" id="inputGroup-sizing-sm">
+            <i-tabler name="address-book" (click)="openChart(chart)"></i-tabler>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="input-group input-group-sm mb-3">
+          <input
+            type="text"
+            placeholder="Priority"
+            class="form-control form-control-sm"
+            [disabled]="dtlTblMode !== TableMode.INSERT"
+          />
+        </div>
+      </div>
+      <div class="col-md-2">
+        <i-tabler
+          name="Circle-Check"
+          class="text-success"
+          [hidden]="dtlTblMode !== TableMode.INSERT"
+          (click)="addRoleToUser(selectedUser.id,newRole)"
+        ></i-tabler>
+        <i-tabler
+          name="Square-X"
+          class="text-warning"
+          [hidden]="dtlTblMode !== TableMode.INSERT"
+          (click)="canselInsertDtl()"
+        ></i-tabler>
+      </div>
+    </div>
   </div>
-
-  <ng-container *ngIf="userRolesState$ | async as appState" [ngSwitch]="appState.dataState">
-    <div class="container px-4 py-0" id="icon-grid">
-      <table class="table table-sm" data-id-field="id">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">RoleName</th>
-            <th scope="col">Priority</th>
-            <th scope="col">Set</th>
-            <th scope="col">Aassign Date</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody *ngFor="let role of selectedUser.userRoles; let i = index">
-          <tr>
-            <th scope="row">{{ i + 1 }}</th>
-            <td>{{ role.appRole.roleName }}</td>
-            <td>{{ role.priority }}</td>
-            <td>{{ role.orgSet.title }}</td>
-            <td>{{ role.assignDate }}</td>
-            <td>
-              <i-tabler
-                name="trash"
-                style="color: red"
-                (click)="deleteUserRole(selectedUser, role)"
-              ></i-tabler>
-            </td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td>
-              <i-tabler
-                name="circle-plus"
-                class="text-info"
-              ></i-tabler>               
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <i-tabler
-                name="device-floppy"
-                class="text-success"
-              ></i-tabler>
-              <i-tabler
-                name="Square-X"
-                class="text-warning"
-              ></i-tabler>              
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>    
-  </ng-container>
-
 </ng-template>
 
 <ng-template #person>
@@ -341,4 +394,12 @@
       </div>
     </form>
   </div>
+</ng-template>
+
+<ng-template #chart>
+  <chart-view></chart-view>
+</ng-template>
+
+<ng-template #role>
+  <role></role>
 </ng-template>

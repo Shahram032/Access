@@ -1,0 +1,62 @@
+<div class="modal-header">
+  <h1 class="modal-title h1" id="userModalLabel">Chart</h1>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+    (click)="close()"
+  ></button>
+</div>
+<div class="modal-body">
+  <div class="container px-4 py-0" id="icon-grid">
+    <div class="row">
+      <div class="col-sm">
+        <div class="d-md-flex">
+          <div
+            class="overflow-scroll mb-3 mb-md-0 mr-md-3"
+            style="min-width: 50%; max-height: 500px; white-space: nowrap"
+          >
+            <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+              <mat-tree-node
+                *matTreeNodeDef="let node; when: hasChild"
+                matTreeNodePadding
+              >
+                <button
+                  mat-icon-button
+                  matTreeNodeToggle
+                  [attr.aria-label]="'Toggle ' + node.item"
+                >
+                  <mat-icon class="mat-icon-rtl-mirror">
+                    {{
+                      treeControl.isExpanded(node)
+                        ? "expand_more"
+                        : "chevron_right"
+                    }}
+                  </mat-icon>
+                </button>
+                <label>
+                  <input
+                    data-index="0"
+                    name="chartId"
+                    type="radio"
+                    value="0"
+                    (click)="setParent(node)"
+                  />
+                </label>
+                {{ node.item }}
+              </mat-tree-node>
+            </mat-tree>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <button
+        class="btn btn-sm btn-outline-primary w-100"
+        (click)="selectSet()"
+      >
+        Select
+      </button>
+    </div>
+  </div>
+</div>

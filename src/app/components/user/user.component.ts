@@ -16,6 +16,9 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { AppUser } from 'src/app/interface/user';
 import { TableMode } from 'src/app/enum/table-mode';
 import { UserRole } from 'src/app/interface/role';
+import { ChartViewComponent } from '../org/chart/chart-view/chart-view.component';
+import { OrgSet } from '../org/chart/interface/node';
+import { AppRole } from 'src/app/interface/app-role';
 
 @Component({
   selector: 'app-user',
@@ -23,15 +26,29 @@ import { UserRole } from 'src/app/interface/role';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
+
   modalRef1!: BsModalRef;
   modalRef2!: BsModalRef;
+  modalRefChart!: BsModalRef;
 
   tableMode: TableMode = TableMode.VIEW;
+  dtlTblMode: TableMode = TableMode.VIEW;
 
   public userStatuses = Object.values(UserStatus);
   public userStatusesMapping = UserStatusMapping;
 
   selectedUser!: AppUser;
+  selectedSet: OrgSet = {};
+  selectedRole: AppRole = {};
+
+  newRole: UserRole = {
+    id: 0,
+    roleName: '',
+    priority: 0,
+    appRole: {} as AppRole,
+    orgSet: this.selectedSet,
+    assignDate : {} as Date 
+  };
 
   constructor(
     private service: AccessService,
@@ -66,6 +83,34 @@ export class UserComponent implements OnInit {
     });
   }
 
+  openChart(template: TemplateRef<any>) {
+    this.service.modalRefChart = this.modalService.show(template, {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+      class: 'modal-md',
+    });
+    this.modalService.onHide.subscribe(() => 
+    {
+      this.selectedSet = this.service.getOrgSet();
+      this.newRole.orgSet = this.selectedSet;
+    });
+  }
+
+  openRole(template: TemplateRef<any>) {
+    this.service.modalRefRole = this.modalService.show(template, {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+      class: 'modal-md',
+    });
+    this.modalService.onHide.subscribe(() => 
+    {
+      this.selectedRole = this.service.getRole();
+      this.newRole.appRole = this.selectedRole;
+    });
+  }
+
   openPersonModal(template: TemplateRef<any>) {
     if (this.tableMode === TableMode.EDIT) return;
     this.modalRef2 = this.modalService.show(template, {
@@ -87,6 +132,8 @@ export class UserComponent implements OnInit {
       }),
       tap((res) => {
         this.selectedUser.userRoles = res.appData.data.userRoles!;
+        this.newRole = {} as UserRole;
+        this.dtlTblMode = TableMode.VIEW;
       }),
       startWith({ dataState: DataState.LOADING_STATE }),
       catchError(() => {
@@ -94,4 +141,30 @@ export class UserComponent implements OnInit {
       })
     );
   }
+
+  addRoleToUser(userId: number, role: UserRole): void {
+    var time = new Date();
+    role.assignDate = time;
+    this.userRolesState$ = this.service.addRoleToUser$(userId, role).pipe(
+      map((response) => {
+        return { dataState: DataState.LOADED_STATE, appData: response };
+      }),
+      tap((res) => {
+        this.selectedUser.userRoles = res.appData.data.userRoles!;
+      }),
+      startWith({ dataState: DataState.LOADING_STATE }),
+      catchError(() => {
+        return of({ dataState: DataState.ERROR_STATE });
+      })
+    );
+  }
+
+  insertDtl(){
+    this.dtlTblMode = TableMode.INSERT;
+  }
+
+  canselInsertDtl(){
+    this.dtlTblMode = TableMode.VIEW;
+  }  
+
 }

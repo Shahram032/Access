@@ -7,5 +7,5 @@ export interface UserRole {
     priority: number;
     appRole: AppRole;
     orgSet: OrgSet;
-    assignDate: Date;
+    assignDate?: Date;
 }

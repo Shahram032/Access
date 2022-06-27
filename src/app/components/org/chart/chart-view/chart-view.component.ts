@@ -15,11 +15,12 @@ import {
   tap,
 } from 'rxjs';
 import { DataState } from 'src/app/enum/data-state.enum';
+import { Global } from 'src/app/global';
 import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-response';
 import { AccessService } from 'src/app/service/access.service';
-import { OrgSet } from './interface/node';
-import { SetForm } from './interface/set-form';
+import { OrgSet } from './../interface/node';
+import { SetForm } from './../interface/set-form';
 
 /*
 export class TodoItemNode {
@@ -100,12 +101,14 @@ export class ChecklistDatabase {
  * @title Tree with checkboxes
  */
 @Component({
-  selector: 'chart',
-  templateUrl: './chart.component.html',
-  styleUrls: ['./chart.component.scss'],
+  selector: 'chart-view',
+  templateUrl: './chart-view.component.html',
+  styleUrls: ['./chart-view.component.scss'],
   providers: [ChecklistDatabase],
 })
-export class ChartComponent implements OnInit {
+export class ChartViewComponent implements OnInit {
+  selectedSet!: OrgSet;
+
   appState$: Observable<AppState<CustomResponse>> | undefined;
   rootState$: Observable<AppState<CustomResponse>> | undefined;
   changeState$: Observable<AppState<CustomResponse>> | undefined;
@@ -307,10 +310,11 @@ export class ChartComponent implements OnInit {
     this.setForm.id = node.id!;
     this.setForm.title = node.item!;
     this.node = node;
+    this.selectedSet = node;
   }
 
   changeTitle(): any {
-    let orgSet: OrgSet = { id: this.setForm.id, title: this.setForm.title }
+    let orgSet: OrgSet = { id: this.setForm.id, title: this.setForm.title };
     if (this.setForm.id !== 0)
       this.changeState$ = this.service.changeTitle$(orgSet).pipe(
         map((response) => {
@@ -319,7 +323,7 @@ export class ChartComponent implements OnInit {
         tap((res) => {
           let b: TodoItemFlatNode = this.nodeMap.get(orgSet.id!)!;
           b.item = orgSet.title!;
-          this.saveNode(b,b.item,b.id);
+          this.saveNode(b, b.item, b.id);
         }),
         startWith({ dataState: DataState.LOADING_STATE }),
         catchError(() => {
@@ -329,7 +333,7 @@ export class ChartComponent implements OnInit {
   }
 
   saveChild() {
-    if (this.setForm.id !== 0 && this.setForm.children !== '' ) {
+    if (this.setForm.id !== 0 && this.setForm.children !== '') {
       let child: OrgSet = {
         title: this.setForm.children,
         parent: { id: this.node.id },
@@ -345,7 +349,6 @@ export class ChartComponent implements OnInit {
         return { dataState: DataState.LOADED_STATE, appData: response };
       }),
       tap((res) => {
-
         let a: OrgSet = res.appData.data.orgSet!;
         let parent: OrgSet = this.flatNodeMap.get(this.node.id!)!;
         let b: TodoItemFlatNode = this.nodeMap.get(parent.id!)!;
@@ -357,12 +360,22 @@ export class ChartComponent implements OnInit {
         }
 
         this.addNewItem(b, a.title!, a.id!);
-
       }),
       startWith({ dataState: DataState.LOADING_STATE }),
       catchError(() => {
         return of({ dataState: DataState.ERROR_STATE });
       })
     );
+  }
+
+  selectSet() {
+    this.node.title = this.node.item;
+    this.service.setOrgSet(this.node);
+    console.log(this.service.getOrgSet().title);
+    this.close();
+  }
+
+  close() {
+    this.service.closeChartModal();
   }
 }

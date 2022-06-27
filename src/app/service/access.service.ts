@@ -1,10 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Output } from '@angular/core';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { OrgSet } from '../components/org/chart/interface/node';
+import { AppRole } from '../interface/app-role';
 import { CustomResponse } from '../interface/custom-response';
 import { LoginForm } from '../interface/login-form';
-import { PassedUser } from '../interface/passed-user';
+import { UserRole } from '../interface/role';
 
 const API = 'http://localhost:8085/api/';
 
@@ -16,6 +18,27 @@ const httpOptions = {
 export class AccessService {
   data: string = '';
   apiUrl: string = 'http://localhost:8085/api';
+
+  @Output() orgSet!: OrgSet;
+  @Output() role!: AppRole;
+  @Output() modalRefChart!: BsModalRef;
+  @Output() modalRefRole!: BsModalRef;
+
+  setRole(role: AppRole) {
+    this.role = role;
+  }
+
+  getRole(): AppRole {
+    return this.role;
+  }
+
+  setOrgSet(orgSet: OrgSet) {
+    this.orgSet = orgSet;
+  }
+
+  getOrgSet(): OrgSet {
+    return this.orgSet;
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -49,11 +72,27 @@ export class AccessService {
       .pipe(tap(), catchError(this.handleError))
   );
 
+  roles$ = <Observable<CustomResponse>>(
+    this.http
+      .get<CustomResponse>(`${this.apiUrl}/security/roles`)
+      .pipe(tap(), catchError(this.handleError))
+  );
+
   deleteUserRole$ = (userId: number, roleId: number) =>
     <Observable<CustomResponse>>(
       this.http
         .delete<CustomResponse>(
           `${this.apiUrl}/security/user/roles/delete/${userId}/${roleId}`
+        )
+        .pipe(tap(console.log), catchError(this.handleError))
+    );
+
+  addRoleToUser$ = (userId: number, role: UserRole) =>
+    <Observable<CustomResponse>>(
+      this.http
+        .post<CustomResponse>(
+          `${this.apiUrl}/security/user/add_role/${userId}`,
+          role
         )
         .pipe(tap(console.log), catchError(this.handleError))
     );
@@ -96,5 +135,13 @@ export class AccessService {
 
   handleError(handleError: any): Observable<never> {
     return throwError('');
+  }
+
+  closeChartModal() {
+    this.modalRefChart.hide();
+  }
+
+  closeRoleModal() {
+    this.modalRefRole.hide();
   }
 }

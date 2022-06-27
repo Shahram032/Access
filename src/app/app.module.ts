@@ -14,7 +14,8 @@ import {
   IconAddressBook,
   IconTrash,
   IconDeviceFloppy,
-  IconSquareX
+  IconSquareX,
+  IconCircleCheck
 } from 'angular-tabler-icons/icons';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -36,6 +37,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTreeModule } from '@angular/material/tree';
 import { MaterialExampleModule } from 'src/material.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { ChartViewComponent } from './components/org/chart/chart-view/chart-view.component';
 
 const icons = {
   IconCamera,
@@ -50,7 +52,8 @@ const icons = {
   IconAddressBook,
   IconTrash,
   IconDeviceFloppy,
-  IconSquareX
+  IconSquareX,
+  IconCircleCheck
 };
 
 @NgModule({
@@ -64,6 +67,7 @@ const icons = {
     RoleAccessComponent,
     ChartComponent,
     InfoComponent,
+    ChartViewComponent,
   ],
   imports: [
     BrowserModule,
