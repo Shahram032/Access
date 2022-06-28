@@ -5,7 +5,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { catchError, map, Observable, of, startWith, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, noop, Observable, of, startWith, tap } from 'rxjs';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { UserStatus, UserStatusMapping } from 'src/app/enum/user-status';
 import { AppState } from 'src/app/interface/app-state';
@@ -26,6 +26,11 @@ import { AppRole } from 'src/app/interface/app-role';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
+
+  private filterSubject = new BehaviorSubject<number>(0);
+  private dataSubject!: BehaviorSubject<CustomResponse>;
+
+  filterStatus$ = this.filterSubject.asObservable();
 
   modalRef1!: BsModalRef;
   modalRef2!: BsModalRef;
@@ -55,7 +60,7 @@ export class UserComponent implements OnInit {
     private modalService: BsModalService
   ) {}
   appState$: Observable<AppState<CustomResponse>> | undefined;
-  userRolesState$: Observable<AppState<CustomResponse>> | undefined;
+  //userRolesState$: Observable<AppState<CustomResponse>> | undefined;
   readonly DataState = DataState;
   readonly UserStatus = UserStatus;
   readonly TableMode = TableMode;
@@ -63,6 +68,11 @@ export class UserComponent implements OnInit {
   ngOnInit(): void {
     this.appState$ = this.service.users$.pipe(
       map((response) => {
+        
+        if(!this.dataSubject)
+          this.dataSubject = new BehaviorSubject<CustomResponse>(response);
+
+        this.dataSubject.next(response);
         return { dataState: DataState.LOADED_STATE, appData: response };
       }),
       startWith({ dataState: DataState.LOADING_STATE }),
@@ -70,7 +80,7 @@ export class UserComponent implements OnInit {
         return of({ dataState: DataState.ERROR_STATE, error });
       })
     );
-    this.userRolesState$ = this.appState$;
+    //this.userRolesState$ = this.appState$;
   }
 
   editUser(template: TemplateRef<any>) {
@@ -126,16 +136,17 @@ export class UserComponent implements OnInit {
   }
 
   deleteUserRole(user: AppUser, role: UserRole): void {
-    this.userRolesState$ = this.service.deleteUserRole$(user.id, role.id).pipe(
+    this.filterSubject.next(user.id);
+    this.appState$ = this.service.deleteUserRole$(user.id, role.id).pipe(
       map((response) => {
-        return { dataState: DataState.LOADED_STATE, appData: response };
+        const index: number = this.dataSubject.value.data.appUsers?.findIndex(u => u.id === user.id)!;
+        this.dataSubject.value.data.appUsers![index].userRoles = response.data.appUser?.userRoles!;
+        this.selectedUser.userRoles = response.data.appUser?.userRoles!
+
+        this.filterSubject.next(0);
+        return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
       }),
-      tap((res) => {
-        this.selectedUser.userRoles = res.appData.data.userRoles!;
-        this.newRole = {} as UserRole;
-        this.dtlTblMode = TableMode.VIEW;
-      }),
-      startWith({ dataState: DataState.LOADING_STATE }),
+      startWith({ dataState: DataState.LOADED_STATE , appData: this.dataSubject.value}),
       catchError(() => {
         return of({ dataState: DataState.ERROR_STATE });
       })
@@ -145,14 +156,17 @@ export class UserComponent implements OnInit {
   addRoleToUser(userId: number, role: UserRole): void {
     var time = new Date();
     role.assignDate = time;
-    this.userRolesState$ = this.service.addRoleToUser$(userId, role).pipe(
+    this.filterSubject.next(userId);
+    this.appState$ = this.service.addRoleToUser$(userId, role).pipe(
       map((response) => {
-        return { dataState: DataState.LOADED_STATE, appData: response };
+        const index: number = this.dataSubject.value.data.appUsers?.findIndex(u => u.id === userId)!;
+        this.dataSubject.value.data.appUsers![index].userRoles = response.data.userRoles!;
+        this.selectedUser.userRoles = response.data.userRoles!
+
+        this.filterSubject.next(0);
+        return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
       }),
-      tap((res) => {
-        this.selectedUser.userRoles = res.appData.data.userRoles!;
-      }),
-      startWith({ dataState: DataState.LOADING_STATE }),
+      startWith({ dataState: DataState.LOADED_STATE , appData: this.dataSubject.value}),
       catchError(() => {
         return of({ dataState: DataState.ERROR_STATE });
       })

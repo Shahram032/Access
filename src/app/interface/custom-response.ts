@@ -13,7 +13,8 @@ export interface CustomResponse {
   developerMessage: string;
   data: {
     passedUser?: PassedUser;
-    users?: AppUser[];
+    appUsers?: AppUser[];
+    appUser?: AppUser;
     orgSet?: OrgSet;
     orgSets?: OrgSet[];
     userRoles?: UserRole[];
