@@ -15,7 +15,7 @@
       </button>
       <div class="collapse navbar-collapse" id="homeNavbar">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item" (click)="editUser(template)">
+          <li class="nav-item" (click)="modalService.openModal('user',template,selectedUser)">
             <a class="nav-link active text-info" aria-current="page">
               <i-tabler name="edit"></i-tabler> Edit
             </a>
@@ -113,7 +113,7 @@
       class="btn-close"
       data-bs-dismiss="modal"
       aria-label="Close"
-      (click)="modalRef1.hide()"
+      (click)="closeUserModal()"
     ></button>
   </div>
   <div class="modal-body">
@@ -159,7 +159,7 @@
             name="defaultOrgSet"
             [(ngModel)]="selectedUser.defaultOrgSet.title"
           />
-          <span class="input-group-text lookup" id="inputGroup-sizing-sm">
+          <span class="input-group-text lookup" id="inputGroup-sizing-sm" (click)="modalService.openModal('chart',chart,selectedSet)">
             <i-tabler name="address-book"></i-tabler>
           </span>
         </div>

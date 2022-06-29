@@ -1,11 +1,14 @@
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import {
-  Component,
-  ElementRef,
-  OnInit,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
-import { BehaviorSubject, catchError, map, noop, Observable, of, startWith, tap } from 'rxjs';
+  BehaviorSubject,
+  catchError,
+  map,
+  noop,
+  Observable,
+  of,
+  startWith,
+  tap,
+} from 'rxjs';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { UserStatus, UserStatusMapping } from 'src/app/enum/user-status';
 import { AppState } from 'src/app/interface/app-state';
@@ -16,9 +19,9 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { AppUser } from 'src/app/interface/user';
 import { TableMode } from 'src/app/enum/table-mode';
 import { UserRole } from 'src/app/interface/role';
-import { ChartViewComponent } from '../org/chart/chart-view/chart-view.component';
 import { OrgSet } from '../org/chart/interface/node';
 import { AppRole } from 'src/app/interface/app-role';
+import { ModalService } from 'src/app/service/modal.service';
 
 @Component({
   selector: 'app-user',
@@ -26,7 +29,6 @@ import { AppRole } from 'src/app/interface/app-role';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
-
   private filterSubject = new BehaviorSubject<number>(0);
   private dataSubject!: BehaviorSubject<CustomResponse>;
 
@@ -43,7 +45,7 @@ export class UserComponent implements OnInit {
   public userStatusesMapping = UserStatusMapping;
 
   selectedUser!: AppUser;
-  selectedSet: OrgSet = {};
+  @Input() selectedSet: OrgSet = {};
   selectedRole: AppRole = {};
 
   newRole: UserRole = {
@@ -52,15 +54,17 @@ export class UserComponent implements OnInit {
     priority: 0,
     appRole: {} as AppRole,
     orgSet: this.selectedSet,
-    assignDate : {} as Date 
+    assignDate: {} as Date,
   };
 
   constructor(
     private service: AccessService,
-    private modalService: BsModalService
+    private bsModalService: BsModalService,
+    public modalService: ModalService
   ) {}
+
   appState$: Observable<AppState<CustomResponse>> | undefined;
-  //userRolesState$: Observable<AppState<CustomResponse>> | undefined;
+
   readonly DataState = DataState;
   readonly UserStatus = UserStatus;
   readonly TableMode = TableMode;
@@ -68,8 +72,7 @@ export class UserComponent implements OnInit {
   ngOnInit(): void {
     this.appState$ = this.service.users$.pipe(
       map((response) => {
-        
-        if(!this.dataSubject)
+        if (!this.dataSubject)
           this.dataSubject = new BehaviorSubject<CustomResponse>(response);
 
         this.dataSubject.next(response);
@@ -80,12 +83,11 @@ export class UserComponent implements OnInit {
         return of({ dataState: DataState.ERROR_STATE, error });
       })
     );
-    //this.userRolesState$ = this.appState$;
   }
 
   editUser(template: TemplateRef<any>) {
     this.tableMode = TableMode.EDIT;
-    this.modalRef1 = this.modalService.show(template, {
+    this.modalRef1 = this.bsModalService.show(template, {
       backdrop: true,
       ignoreBackdropClick: true,
       keyboard: false,
@@ -94,28 +96,23 @@ export class UserComponent implements OnInit {
   }
 
   openChart(template: TemplateRef<any>) {
-    this.service.modalRefChart = this.modalService.show(template, {
-      backdrop: true,
-      ignoreBackdropClick: true,
-      keyboard: false,
-      class: 'modal-md',
-    });
-    this.modalService.onHide.subscribe(() => 
-    {
-      this.selectedSet = this.service.getOrgSet();
-      this.newRole.orgSet = this.selectedSet;
+    this.modalService.openModal('chart', template, this.selectedSet);
+    this.modalService.onHide.subscribe((chart) => {
+      if (chart) {
+        this.selectedSet = chart; //this.service.getOrgSet();
+        this.newRole.orgSet = this.selectedSet;        
+      }
     });
   }
 
   openRole(template: TemplateRef<any>) {
-    this.service.modalRefRole = this.modalService.show(template, {
+    this.service.modalRefRole = this.bsModalService.show(template, {
       backdrop: true,
       ignoreBackdropClick: true,
       keyboard: false,
       class: 'modal-md',
     });
-    this.modalService.onHide.subscribe(() => 
-    {
+    this.bsModalService.onHide.subscribe(() => {
       this.selectedRole = this.service.getRole();
       this.newRole.appRole = this.selectedRole;
     });
@@ -123,7 +120,7 @@ export class UserComponent implements OnInit {
 
   openPersonModal(template: TemplateRef<any>) {
     if (this.tableMode === TableMode.EDIT) return;
-    this.modalRef2 = this.modalService.show(template, {
+    this.modalRef2 = this.bsModalService.show(template, {
       backdrop: true,
       ignoreBackdropClick: true,
       keyboard: false,
@@ -139,14 +136,23 @@ export class UserComponent implements OnInit {
     this.filterSubject.next(user.id);
     this.appState$ = this.service.deleteUserRole$(user.id, role.id).pipe(
       map((response) => {
-        const index: number = this.dataSubject.value.data.appUsers?.findIndex(u => u.id === user.id)!;
-        this.dataSubject.value.data.appUsers![index].userRoles = response.data.appUser?.userRoles!;
-        this.selectedUser.userRoles = response.data.appUser?.userRoles!
+        const index: number = this.dataSubject.value.data.appUsers?.findIndex(
+          (u) => u.id === user.id
+        )!;
+        this.dataSubject.value.data.appUsers![index].userRoles =
+          response.data.appUser?.userRoles!;
+        this.selectedUser.userRoles = response.data.appUser?.userRoles!;
 
         this.filterSubject.next(0);
-        return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
+        return {
+          dataState: DataState.LOADED_STATE,
+          appData: this.dataSubject.value,
+        };
       }),
-      startWith({ dataState: DataState.LOADED_STATE , appData: this.dataSubject.value}),
+      startWith({
+        dataState: DataState.LOADED_STATE,
+        appData: this.dataSubject.value,
+      }),
       catchError(() => {
         return of({ dataState: DataState.ERROR_STATE });
       })
@@ -159,26 +165,38 @@ export class UserComponent implements OnInit {
     this.filterSubject.next(userId);
     this.appState$ = this.service.addRoleToUser$(userId, role).pipe(
       map((response) => {
-        const index: number = this.dataSubject.value.data.appUsers?.findIndex(u => u.id === userId)!;
-        this.dataSubject.value.data.appUsers![index].userRoles = response.data.userRoles!;
-        this.selectedUser.userRoles = response.data.userRoles!
+        const index: number = this.dataSubject.value.data.appUsers?.findIndex(
+          (u) => u.id === userId
+        )!;
+        this.dataSubject.value.data.appUsers![index].userRoles =
+          response.data.userRoles!;
+        this.selectedUser.userRoles = response.data.userRoles!;
 
         this.filterSubject.next(0);
-        return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
+        return {
+          dataState: DataState.LOADED_STATE,
+          appData: this.dataSubject.value,
+        };
       }),
-      startWith({ dataState: DataState.LOADED_STATE , appData: this.dataSubject.value}),
+      startWith({
+        dataState: DataState.LOADED_STATE,
+        appData: this.dataSubject.value,
+      }),
       catchError(() => {
         return of({ dataState: DataState.ERROR_STATE });
       })
     );
   }
 
-  insertDtl(){
+  insertDtl() {
     this.dtlTblMode = TableMode.INSERT;
   }
 
-  canselInsertDtl(){
+  canselInsertDtl() {
     this.dtlTblMode = TableMode.VIEW;
-  }  
+  }
 
+  closeUserModal() {
+    this.modalService.closeModal('user', this.selectedUser);
+  }
 }

@@ -137,10 +137,6 @@ export class AccessService {
     return throwError('');
   }
 
-  closeChartModal() {
-    this.modalRefChart.hide();
-  }
-
   closeRoleModal() {
     this.modalRefRole.hide();
   }

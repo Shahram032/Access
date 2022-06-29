@@ -19,6 +19,7 @@ import { Global } from 'src/app/global';
 import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-response';
 import { AccessService } from 'src/app/service/access.service';
+import { ModalService } from 'src/app/service/modal.service';
 import { OrgSet } from './../interface/node';
 import { SetForm } from './../interface/set-form';
 
@@ -144,7 +145,8 @@ export class ChartViewComponent implements OnInit {
 
   constructor(
     private service: AccessService,
-    private _database: ChecklistDatabase
+    private _database: ChecklistDatabase,
+    public modalService: ModalService
   ) {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
@@ -372,10 +374,10 @@ export class ChartViewComponent implements OnInit {
     this.node.title = this.node.item;
     this.service.setOrgSet(this.node);
     console.log(this.service.getOrgSet().title);
-    this.close();
+    this.modalService.closeModal('chart', this.node);
   }
 
-  close() {
-    this.service.closeChartModal();
+  closeChartModal() {
+    this.modalService.closeModal('','');
   }
 }
