@@ -15,7 +15,8 @@ import {
   IconTrash,
   IconDeviceFloppy,
   IconSquareX,
-  IconCircleCheck
+  IconCircleCheck,
+  IconRefreshAlert
 } from 'angular-tabler-icons/icons';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -53,7 +54,8 @@ const icons = {
   IconTrash,
   IconDeviceFloppy,
   IconSquareX,
-  IconCircleCheck
+  IconCircleCheck,
+  IconRefreshAlert
 };
 
 @NgModule({

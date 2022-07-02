@@ -2,6 +2,7 @@ import { OrgSet } from '../components/org/chart/interface/node';
 import { AppRole } from './app-role';
 import { PassedUser } from './passed-user';
 import { UserRole } from './role';
+import { RoleAccess } from './role-access';
 import { AppUser } from './user';
 
 export interface CustomResponse {
@@ -19,5 +20,7 @@ export interface CustomResponse {
     orgSets?: OrgSet[];
     userRoles?: UserRole[];
     roles?: AppRole[];
+    roleAccesses?: RoleAccess[],
+    roleAccess?: RoleAccess
   };
 }

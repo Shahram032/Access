@@ -236,18 +236,25 @@
               <td>{{ role.orgSet.title }}</td>
               <td>{{ role.assignDate }}</td>
               <td>
-                <i-tabler
+                <i-tabler *ngIf="(filterStatus$ | async) !== role.id"
                   name="trash"
-                  class="text-danger"
+                  class="text-center text-danger"
                   (click)="deleteUserRole(selectedUser, role)"
                 ></i-tabler>
+                <i-tabler
+                *ngIf="(filterStatus$ | async) === role.id"
+                name="Refresh-Alert"
+                class="text-center text-warning"
+                role="status"
+                aria-hidden="true"
+              ></i-tabler>                
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-
+    
     <div class="col-md-2">
       <div class="input-group input-group-sm"></div>
     </div>

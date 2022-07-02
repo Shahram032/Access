@@ -32,6 +32,9 @@ export class UserComponent implements OnInit {
   private filterSubject = new BehaviorSubject<number>(0);
   private dataSubject!: BehaviorSubject<CustomResponse>;
 
+  private isLoading = new BehaviorSubject<boolean>(false);
+  isLoading$ = this.isLoading.asObservable();
+
   filterStatus$ = this.filterSubject.asObservable();
 
   modalRef1!: BsModalRef;
@@ -133,12 +136,14 @@ export class UserComponent implements OnInit {
   }
 
   deleteUserRole(user: AppUser, role: UserRole): void {
-    this.filterSubject.next(user.id);
+    this.filterSubject.next(role.id);
+    this.isLoading.next(true);
     this.appState$ = this.service.deleteUserRole$(user.id, role.id).pipe(
       map((response) => {
         const index: number = this.dataSubject.value.data.appUsers?.findIndex(
           (u) => u.id === user.id
         )!;
+        this.isLoading.next(false);
         this.dataSubject.value.data.appUsers![index].userRoles =
           response.data.appUser?.userRoles!;
         this.selectedUser.userRoles = response.data.appUser?.userRoles!;
@@ -154,6 +159,8 @@ export class UserComponent implements OnInit {
         appData: this.dataSubject.value,
       }),
       catchError(() => {
+        this.isLoading.next(false);
+        this.filterSubject.next(0);
         return of({ dataState: DataState.ERROR_STATE });
       })
     );

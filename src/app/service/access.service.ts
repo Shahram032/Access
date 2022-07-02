@@ -72,6 +72,12 @@ export class AccessService {
       .pipe(tap(), catchError(this.handleError))
   );
 
+  roleAccesses$ = <Observable<CustomResponse>>(
+    this.http
+      .get<CustomResponse>(`${this.apiUrl}/security/role_accesses`)
+      .pipe(tap(), catchError(this.handleError))
+  );
+
   roles$ = <Observable<CustomResponse>>(
     this.http
       .get<CustomResponse>(`${this.apiUrl}/security/roles`)

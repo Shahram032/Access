@@ -1,3 +1,4 @@
+import { FlowStep } from "./flow-step";
 import { SystemEntity } from "./system-entity";
 import { SystemField } from "./system-field";
 
@@ -16,8 +17,8 @@ export interface RoleAccess {
     writeSet: boolean;
     setReadDeep: number;
     setWriteDeep: number;
-    deniedViewList: Array<SystemField>;
-    deniedEditList: Array<SystemField>;
-    //List<FlowStep> viewSteps = new ArrayList<>();
-    //List<FlowStep> editSteps = new ArrayList<>();    
+    deniedViewList: SystemField[];
+    deniedEditList: SystemField[];
+    viewSteps: FlowStep[];
+    editSteps: FlowStep[];    
 }
