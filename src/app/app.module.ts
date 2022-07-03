@@ -16,7 +16,20 @@ import {
   IconDeviceFloppy,
   IconSquareX,
   IconCircleCheck,
-  IconRefreshAlert
+  IconRefreshAlert,
+  IconSelect,
+  IconFilePlus,
+  IconFileMinus,
+  IconEyeCheck,
+  IconPencil,
+  IconBook,
+  IconEditCircle,
+  IconEye,
+  IconArchive,
+  IconArrowBarToDown,
+  IconArrowAutofitDown,
+  IconStar,
+  IconCheck
 } from 'angular-tabler-icons/icons';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -39,6 +52,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MaterialExampleModule } from 'src/material.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ChartViewComponent } from './components/org/chart/chart-view/chart-view.component';
+import { EntityComponent } from './components/entity/entity.component';
 
 const icons = {
   IconCamera,
@@ -55,7 +69,20 @@ const icons = {
   IconDeviceFloppy,
   IconSquareX,
   IconCircleCheck,
-  IconRefreshAlert
+  IconRefreshAlert,
+  IconSelect,
+  IconFilePlus,
+  IconFileMinus,
+  IconEyeCheck,
+  IconPencil,
+  IconBook,
+  IconEditCircle,
+  IconEye,
+  IconArchive,
+  IconArrowBarToDown,
+  IconArrowAutofitDown,
+  IconStar,
+  IconCheck
 };
 
 @NgModule({
@@ -70,6 +97,7 @@ const icons = {
     ChartComponent,
     InfoComponent,
     ChartViewComponent,
+    EntityComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,105 +1,269 @@
 <div class="container px-4 py-0" id="icon-grid">
-    <nav class="navbar navbar-expand-sm">
-      <div class="container-fluid">
-        <a class="navbar-brand text-success" href="role_access">Role Access List</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#homeNavbar"
-          aria-controls="#homeNavbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <i-tabler name="menu2"></i-tabler>
-        </button>
-        <div class="collapse navbar-collapse" id="homeNavbar">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active text-info" aria-current="page">
-                <i-tabler name="edit"></i-tabler> Edit
-              </a>
-            </li>
-          </ul>
-        </div>
-        <form class="d-flex" role="search">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+  <nav class="navbar navbar-expand-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand text-success" href="role_access"
+        >Role Access List</a
+      >
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#homeNavbar"
+        aria-controls="#homeNavbar"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <i-tabler name="menu2"></i-tabler>
+      </button>
+      <div class="collapse navbar-collapse" id="homeNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active text-info" aria-current="page">
+              <i-tabler name="edit"></i-tabler> Edit
+            </a>
+          </li>
+        </ul>
       </div>
-    </nav>
-
-
-
-<ng-container *ngIf="appState$ | async as appState" [ngSwitch]="appState.dataState">
-  
-  
-  <ng-container *ngSwitchCase="DataState.LOADING_STATE">
-    <div class="col-md-12 single-note-item text-center">
-      <div class="spinner-border text-info" role="status"></div>
+      <form class="d-flex" role="search">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search"
+        />
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
     </div>
-  </ng-container>
-  
+  </nav>
 
-  
-  <ng-container *ngSwitchCase="DataState.LOADED_STATE">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-2 table-responsive-xl">
-      <table class="table table-sm" data-id-field="id">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Selected</th>
-            <th scope="col">Name</th>
-            <th scope="col">System</th>
-            <th scope="col">Entity</th>
-            <th scope="col">A_I</th>
-            <th scope="col">A_E</th>
-            <th scope="col">A_D</th>
-            <th scope="col">R_A</th>
-            <th scope="col">W_A</th>
-            <th scope="col">R_O</th>
-            <th scope="col">W_O</th>
-            <th scope="col">R_S</th>
-            <th scope="col">W_S</th>
-            <th scope="col">R_D</th>
-            <th scope="col">W_D</th>
-            <th scope="col">Other</th>
-            <th data-radio="true"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let ra of appState.appData?.data?.roleAccesses; let i = index">
-            <th scope="row">{{ i + 1 }}</th>
-            <td class="bs-checkbox">
-              <label>
-                <input
-                  [attr.data-index]="i"
-                  name="id"
-                  type="radio"
-                  [attr.value]="ra.id"
+  <ng-container
+    *ngIf="appState$ | async as appState"
+    [ngSwitch]="appState.dataState"
+  >
+    <ng-container *ngSwitchCase="DataState.LOADING_STATE">
+      <div class="col-md-12 single-note-item text-center">
+        <div class="spinner-border text-info" role="status"></div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="DataState.LOADED_STATE">
+      <div
+        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-2 table-responsive-xl"
+      >
+        <table class="table table-sm" data-id-field="id">
+          <thead>
+            <tr>
+              <th class="text-center" scope="col">
+                <i-tabler
+                  name="circle-Plus"
+                  class="text-success"
+                  (click)="newRoleAccess()"
+                ></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="Select"></i-tabler>
+              </th>
+              <th class="text-left" scope="col">Name</th>
+              <th class="text-left" scope="col">System</th>
+              <th class="text-left" scope="col">Entity</th>
+              <th class="text-center" scope="col">
+                <i-tabler name="File-Plus"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="edit"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="File-Minus"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="Eye"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="Pencil"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="Eye-Check"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="Edit-Circle"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="Eye"></i-tabler
+                ><i-tabler name="Archive"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="Pencil"></i-tabler
+                ><i-tabler name="Archive"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="Arrow-Bar-To-Down"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="Arrow-Autofit-Down"></i-tabler>
+              </th>
+              <th class="text-center" scope="col">
+                <i-tabler name="star"></i-tabler>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="
+                let ra of appState.appData?.data?.roleAccesses;
+                let i = index
+              "
+            >
+              <th class="text-center" scope="row">{{ i + 1 }}</th>
+              <td class="text-center bs-checkbox">
+                <label>
+                  <input
+                    [attr.data-index]="i"
+                    name="id"
+                    type="radio"
+                    [attr.value]="ra.id"
+                  />
+                </label>
+              </td>
+              <td class="text-left">
+                <span *ngIf="(editStatus$ | async) !== ra.id">{{
+                  ra.name
+                }}</span
+                ><input
+                  class="dtlEdit text-primary"
+                  type="text"
+                  *ngIf="(editStatus$ | async) === ra.id"
+                  [(ngModel)]="ra.name"
                 />
-              </label>
-            </td>
-            <td>{{ ra.name }}</td>
-            <td>{{ ra.entity.systemName }}</td>
-            <td>{{ ra.entity.entityName }}</td>
-          </tr>
-        </tbody>
-      </table>      
-    </div>
+              </td>
+              <td class="text-left">{{ ra.entity.systemName }}</td>
+              <td class="text-left">{{ ra.entity.entityName }}</td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="ra.allowInsert" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="ra.allowEdit" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="ra.allowDelete" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="ra.readAll" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="ra.writeAll" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="ra.readOwner" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="ra.writeOwner" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="ra.readSet" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="ra.writeSet" />
+              </td>
+              <td class="text-center">{{ ra.setReadDeep }}</td>
+              <td class="text-center">{{ ra.setWriteDeep }}</td>
+              <td class="text-center">
+                <i-tabler
+                  name="device-floppy"
+                  class="text-success"
+                  (click)="saveChanges(ra)"
+                  *ngIf="(filterStatus$ | async) !== ra.id"
+                ></i-tabler>
+                <i-tabler
+                  name="edit"
+                  class="text-info"
+                  (click)="editRoleAccess(ra.id!)"
+                  *ngIf="(filterStatus$ | async) !== ra.id"
+                ></i-tabler>
+                <i-tabler
+                  name="Hand-Stop"
+                  class="text-danger"
+                  disabled
+                  *ngIf="(filterStatus$ | async) === ra.id"
+                ></i-tabler>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="tblMode === TableMode.INSERT">
+            <tr>
+              <th class="text-center" scope="row"></th>
+              <td class="text-center bs-checkbox">
+                <label>
+                  <input type="radio" />
+                </label>
+              </td>
+              <td class="text-center">
+                <input
+                type="text"
+                placeholder="Role name"
+                class="form-control form-control-sm w200"
+                [(ngModel)]="newRa!.name"
+              />
+              </td>
+              <td class="text-center">{{ newRa!.entity.systemName }}</td>
+              <td class="text-center">
+                <div class="input-group input-group-sm">
+                  <input
+                    type="text"
+                    placeholder="Entity"
+                    class="form-control form-control-sm w100"
+                    [(ngModel)]="newRa!.entity.entityName"
+                  />
+                  <span class="input-group-text lookup" id="inputGroup-sizing-sm">
+                    <i-tabler name="address-book" (click)="openEntity(entity)"></i-tabler>
+                  </span>
+                </div>
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="newRa.allowInsert" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="newRa.allowEdit" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="newRa.allowDelete" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="newRa.readAll" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="newRa.writeAll" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="newRa.readOwner" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="newRa.writeOwner" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="newRa.readSet" />
+              </td>
+              <td class="text-center">
+                <input type="checkbox" [(ngModel)]="newRa.writeSet" />
+              </td>
+              <td class="text-center"></td>
+              <td class="text-center"></td>
+              <td class="text-center">
+                <i-tabler name="device-floppy" class="text-success" (click)="saveNew(newRa)"></i-tabler>
+                <i-tabler name="edit" class="text-info"></i-tabler>
+                <i-tabler
+                  name="Hand-Stop"
+                  class="text-danger"
+                  disabled
+                ></i-tabler>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </ng-container>
   </ng-container>
-  
-
-
-</ng-container>
-
-
-
-
-
 </div>
+
+<ng-template #entity>
+  <entity></entity>
+</ng-template>

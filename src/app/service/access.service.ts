@@ -7,6 +7,7 @@ import { AppRole } from '../interface/app-role';
 import { CustomResponse } from '../interface/custom-response';
 import { LoginForm } from '../interface/login-form';
 import { UserRole } from '../interface/role';
+import { RoleAccess } from '../interface/role-access';
 
 const API = 'http://localhost:8085/api/';
 
@@ -56,6 +57,13 @@ export class AccessService {
         .pipe(tap(), catchError(this.handleError))
     );
 
+  saveRoleAccess$ = (ra: RoleAccess) =>
+  <Observable<CustomResponse>>(
+    this.http
+      .post<CustomResponse>(`${this.apiUrl}/security/role_access/save`, ra)
+      .pipe(tap(), catchError(this.handleError))
+  );
+
   changeTitle$ = (orgSet: OrgSet) =>
     <Observable<CustomResponse>>(
       this.http
@@ -81,6 +89,12 @@ export class AccessService {
   roles$ = <Observable<CustomResponse>>(
     this.http
       .get<CustomResponse>(`${this.apiUrl}/security/roles`)
+      .pipe(tap(), catchError(this.handleError))
+  );
+
+  entities$ = <Observable<CustomResponse>>(
+    this.http
+      .get<CustomResponse>(`${this.apiUrl}/tools/system/get_all_entities`)
       .pipe(tap(), catchError(this.handleError))
   );
 
@@ -146,4 +160,5 @@ export class AccessService {
   closeRoleModal() {
     this.modalRefRole.hide();
   }
+
 }

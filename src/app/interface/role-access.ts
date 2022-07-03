@@ -2,7 +2,7 @@ import { SystemEntity } from "./system-entity";
 import { SystemField } from "./system-field";
 
 export interface RoleAccess {
-    id: number;
+    id?: number;
     name: string;
     entity: SystemEntity;
     allowInsert: boolean;

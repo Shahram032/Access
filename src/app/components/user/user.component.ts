@@ -103,7 +103,7 @@ export class UserComponent implements OnInit {
     this.modalService.onHide.subscribe((chart) => {
       if (chart) {
         this.selectedSet = chart; //this.service.getOrgSet();
-        this.newRole.orgSet = this.selectedSet;        
+        this.newRole.orgSet = this.selectedSet;
       }
     });
   }

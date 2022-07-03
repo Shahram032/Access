@@ -3,6 +3,7 @@ import { AppRole } from './app-role';
 import { PassedUser } from './passed-user';
 import { UserRole } from './role';
 import { RoleAccess } from './role-access';
+import { SystemEntity } from './system-entity';
 import { AppUser } from './user';
 
 export interface CustomResponse {
@@ -21,6 +22,7 @@ export interface CustomResponse {
     userRoles?: UserRole[];
     roles?: AppRole[];
     roleAccesses?: RoleAccess[],
-    roleAccess?: RoleAccess
+    roleAccess?: RoleAccess,
+    entities?: SystemEntity[]
   };
 }
