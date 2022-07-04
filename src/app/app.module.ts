@@ -53,6 +53,7 @@ import { MaterialExampleModule } from 'src/material.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ChartViewComponent } from './components/org/chart/chart-view/chart-view.component';
 import { EntityComponent } from './components/entity/entity.component';
+import { FlowChartComponent } from './components/work-flow/flow-chart/flow-chart.component';
 
 const icons = {
   IconCamera,
@@ -98,6 +99,7 @@ const icons = {
     InfoComponent,
     ChartViewComponent,
     EntityComponent,
+    FlowChartComponent,
   ],
   imports: [
     BrowserModule,
