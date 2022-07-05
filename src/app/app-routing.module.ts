@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'user', component: UserComponent },
   { path: 'work_flow', component: WorkFlowComponent },
-  { path: 'flow-chart', component: FlowChartComponent },
+  { path: 'flow_chart', component: FlowChartComponent },
   { path: 'role', component: RoleComponent },
   { path: 'role_access', component: RoleAccessComponent },
   { path: 'org_chart', component: ChartComponent },

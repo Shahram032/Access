@@ -4,15 +4,18 @@ import * as go from 'gojs';
 const $ = go.GraphObject.make;
 
 @Component({
-  selector: 'flow-chart',
+  selector: 'flow_chart',
   templateUrl: './flow-chart.component.html',
   styleUrls: ['./flow-chart.component.scss'],
 })
 export class FlowChartComponent implements OnInit {
   constructor() {}
+  
+  myDiagram: go.Diagram = new go.Diagram;
 
   ngOnInit(): void {
-    const myDiagram = $(
+
+    this.myDiagram = $(
       go.Diagram,
       'myDiagramDiv', // must name or refer to the DIV HTML element
       {
@@ -22,18 +25,18 @@ export class FlowChartComponent implements OnInit {
       }
     );
 
-    myDiagram.addDiagramListener('Modified', (e) => {
+    this.myDiagram.addDiagramListener('Modified', (e) => {
       var button = document.getElementById('SaveButton') as HTMLButtonElement;
-      if (button) button.disabled = !myDiagram.isModified;
+      if (button) button.disabled = !this.myDiagram.isModified;
       var idx = document.title.indexOf('*');
-      if (myDiagram.isModified) {
+      if (this.myDiagram.isModified) {
         if (idx < 0) document.title += '*';
       } else {
         if (idx >= 0) document.title = document.title.slice(0, idx);
       }
     });
 
-    myDiagram.nodeTemplateMap.add(
+    this.myDiagram.nodeTemplateMap.add(
       '',
       $(
         go.Node,
@@ -67,7 +70,7 @@ export class FlowChartComponent implements OnInit {
       )
     );
 
-    myDiagram.nodeTemplateMap.add(
+    this.myDiagram.nodeTemplateMap.add(
       'Conditional',
       $(
         go.Node,
@@ -103,7 +106,7 @@ export class FlowChartComponent implements OnInit {
       )
     );
 
-    myDiagram.nodeTemplateMap.add(
+    this.myDiagram.nodeTemplateMap.add(
       'Start',
       $(
         go.Node,
@@ -127,7 +130,7 @@ export class FlowChartComponent implements OnInit {
       )
     );
 
-    myDiagram.nodeTemplateMap.add(
+    this.myDiagram.nodeTemplateMap.add(
       'End',
       $(
         go.Node,
@@ -170,7 +173,7 @@ export class FlowChartComponent implements OnInit {
       return geo;
     });
 
-    myDiagram.nodeTemplateMap.add(
+    this.myDiagram.nodeTemplateMap.add(
       'Comment',
       $(
         go.Node,
@@ -198,7 +201,7 @@ export class FlowChartComponent implements OnInit {
     );
 
     // replace the default Link template in the linkTemplateMap
-    myDiagram.linkTemplate = $(
+    this.myDiagram.linkTemplate = $(
       go.Link, // the whole link panel
       {
         routing: go.Link.AvoidsNodes,
@@ -266,13 +269,13 @@ export class FlowChartComponent implements OnInit {
       )
     );
 
-    myDiagram.toolManager.linkingTool.temporaryLink.routing =
+    this.myDiagram.toolManager.linkingTool.temporaryLink.routing =
       go.Link.Orthogonal;
-    myDiagram.toolManager.relinkingTool.temporaryLink.routing =
+    this.myDiagram.toolManager.relinkingTool.temporaryLink.routing =
       go.Link.Orthogonal;
 
     //load
-    myDiagram.model = go.Model.fromJson(
+    this.myDiagram.model = go.Model.fromJson(
       (document.getElementById('mySavedModel') as HTMLTextAreaElement).value
     );
 
@@ -283,7 +286,7 @@ export class FlowChartComponent implements OnInit {
           "animationManager.initialAnimationStyle": go.AnimationManager.None,
           "InitialAnimationStarting": this.animateFadeDown, // Instead, animate with this function
 
-          nodeTemplateMap: myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
+          nodeTemplateMap: this.myDiagram.nodeTemplateMap,  // share the templates used by myDiagram
           model: new go.GraphLinksModel([  // specify the contents of the Palette
             { category: "Start", text: "Start" },
             { text: "Step" },
@@ -352,5 +355,14 @@ export class FlowChartComponent implements OnInit {
     animation.add(diagram, 'opacity', 0, 1);
     animation.start();
   }
+
+  load() {
+    this.myDiagram.model = go.Model.fromJson((document.getElementById("mySavedModel")! as HTMLTextAreaElement).value);
+  }
+
+  save() {
+    (document.getElementById("mySavedModel")! as HTMLTextAreaElement).value = this.myDiagram.model.toJson();
+    this.myDiagram.isModified = false;
+  }  
 
 }
