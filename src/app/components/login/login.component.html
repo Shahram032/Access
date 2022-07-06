@@ -15,6 +15,7 @@
       name="username"
       class="form-control form-control-sm mb-2"
       [(ngModel)]="loginForm.username"
+      (keyup.enter)="this.passElement.nativeElement.focus();"
       placeholder="User Name"
       required
       autofocus
@@ -23,7 +24,9 @@
     <input
       type="password"
       id="password"
+      #password
       name="password"
+      (keyup.enter)="login()"
       class="form-control form-control-sm mb-2"
       [(ngModel)]="loginForm.password"
       placeholder="Password"

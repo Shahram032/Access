@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, map, Observable, of, startWith, tap } from 'rxjs';
 import { DataState } from 'src/app/enum/data-state.enum';
@@ -14,6 +14,9 @@ import { AccessService } from 'src/app/service/access.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
+
+  @ViewChild('password')
+  passElement!: ElementRef;
 
   constructor(private service: AccessService, private router: Router) { }
   appState$: Observable<AppState<CustomResponse>> | undefined;
