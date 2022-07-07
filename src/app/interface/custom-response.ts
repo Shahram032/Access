@@ -5,6 +5,7 @@ import { UserRole } from './role';
 import { RoleAccess } from './role-access';
 import { SystemEntity } from './system-entity';
 import { AppUser } from './user';
+import { WorkFlow } from './work-flow';
 
 export interface CustomResponse {
   timeStamp: Date;
@@ -23,6 +24,7 @@ export interface CustomResponse {
     roles?: AppRole[];
     roleAccesses?: RoleAccess[],
     roleAccess?: RoleAccess,
-    entities?: SystemEntity[]
+    entities?: SystemEntity[],
+    workFlows?: WorkFlow[],
   };
 }

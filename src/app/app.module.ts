@@ -29,7 +29,8 @@ import {
   IconArrowBarToDown,
   IconArrowAutofitDown,
   IconStar,
-  IconCheck
+  IconCheck,
+  IconChartDots3
 } from 'angular-tabler-icons/icons';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -83,7 +84,8 @@ const icons = {
   IconArrowBarToDown,
   IconArrowAutofitDown,
   IconStar,
-  IconCheck
+  IconCheck,
+  IconChartDots3
 };
 
 @NgModule({

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { EntityComponent } from './components/entity/entity.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { ChartComponent } from './components/org/chart/chart.component';
@@ -15,12 +16,13 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'user', component: UserComponent },
-  { path: 'work_flow', component: WorkFlowComponent },
+  { path: 'work_flow', component: WorkFlowComponent, data: {} },
   { path: 'flow_chart', component: FlowChartComponent },
   { path: 'role', component: RoleComponent },
   { path: 'role_access', component: RoleAccessComponent },
   { path: 'org_chart', component: ChartComponent },
-  { path: 'org_info', component: InfoComponent }
+  { path: 'org_info', component: InfoComponent },
+  { path: 'entity', component: EntityComponent },
 ];
 
 @NgModule({

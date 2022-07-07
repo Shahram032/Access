@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { AppState } from 'src/app/interface/app-state';
@@ -14,7 +15,7 @@ import { ModalService } from 'src/app/service/modal.service';
 })
 export class EntityComponent implements OnInit {
 
-  constructor(private service: AccessService,private modalService: ModalService) { }
+  constructor(private service: AccessService,private modalService: ModalService,private router: Router) { }
 
   appState$: Observable<AppState<CustomResponse>> | undefined;
   readonly DataState = DataState;
@@ -43,5 +44,9 @@ export class EntityComponent implements OnInit {
   closeEntityModal() {
     this.modalService.closeModal('','');
   }
+
+  getWorkFlow(entity: SystemEntity) {
+    this.router.navigateByUrl('/work_flow', { state: entity });
+  } 
 
 }

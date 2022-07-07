@@ -8,6 +8,7 @@ import { CustomResponse } from '../interface/custom-response';
 import { LoginForm } from '../interface/login-form';
 import { UserRole } from '../interface/role';
 import { RoleAccess } from '../interface/role-access';
+import { SystemEntity } from '../interface/system-entity';
 
 const API = 'http://localhost:8085/api/';
 
@@ -42,6 +43,13 @@ export class AccessService {
   }
 
   constructor(private http: HttpClient) {}
+
+  workFlows$ = (entity: SystemEntity) =>
+    <Observable<CustomResponse>>(
+      this.http
+        .get<CustomResponse>(`${this.apiUrl}/work_flow/entity/flows/${entity.id}`)
+        .pipe(tap(), catchError(this.handleError))
+    );
 
   orgRoot$ = () =>
     <Observable<CustomResponse>>(
