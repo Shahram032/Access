@@ -1,97 +1,91 @@
 <div class="container px-4 py-0" id="icon-grid">
-    <nav class="navbar navbar-expand-sm">
-      <div class="container-fluid">
-        <a class="navbar-brand text-success" href="user">Role List</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#homeNavbar"
-          aria-controls="#homeNavbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <i-tabler name="menu2"></i-tabler>
-        </button>
-        <div class="collapse navbar-collapse" id="homeNavbar">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active text-info" aria-current="page">
-                <i-tabler name="edit"></i-tabler> Edit
-              </a>
-            </li>
-          </ul>
-        </div>
-        <form class="d-flex" role="search">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+  <nav class="navbar navbar-expand-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand text-info">{{ entity?.entityName }} Work Flow List</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#homeNavbar"
+        aria-controls="#homeNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <i-tabler name="menu2"></i-tabler>
+      </button>
+      <div class="collapse navbar-collapse" id="homeNavbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active text-info" aria-current="page">
+              <i-tabler name="edit"></i-tabler> Edit
+            </a>
+          </li>
+        </ul>
       </div>
-    </nav>
-    <ng-container
-      *ngIf="appState$ | async as appState"
-      [ngSwitch]="appState.dataState"
-    >
-      <ng-container *ngSwitchCase="DataState.LOADING_STATE">
-        <div class="col-md-12 single-note-item text-center">
-          <div class="spinner-border text-info" role="status"></div>
-        </div>
-      </ng-container>
-      <div
-        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-2 table-responsive-xl"
-      >
-        <ng-container *ngSwitchCase="DataState.LOADED_STATE">
-          <table class="table table-sm" data-id-field="id">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Selected</th>
-                <th scope="col">Role Name</th>
-                <th scope="col">WorkFlow</th>
-              </tr>
-            </thead>
-            <tbody
-              *ngFor="
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+  </nav>
+  <ng-container *ngIf="appState$ | async as appState" [ngSwitch]="appState.dataState">
+    <ng-container *ngSwitchCase="DataState.LOADING_STATE">
+      <div class="col-md-12 single-note-item text-center">
+        <div class="spinner-border text-info" role="status"></div>
+      </div>
+    </ng-container>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-2 table-responsive-xl">
+      <ng-container *ngSwitchCase="DataState.LOADED_STATE">
+        <table class="table table-sm" data-id-field="id">
+          <thead>
+            <tr>
+              <th scope="col">
+                <i-tabler name="circle-Plus" class="text-success" (click)="newWorkFlow()"></i-tabler>
+              </th>
+              <th scope="col">ID</th>
+              <th scope="col">From Date</th>
+              <th scope="col">To Date</th>
+              <th scope="col">Steps</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="
                 let flow of appState.appData?.data?.workFlows;
                 let i = index
-              "
-            >
-              <tr>
-                <th scope="row">{{ i + 1 }}</th>
-                <td class="bs-checkbox">
-                  <label>
-                    <input
-                      data-index="0"
-                      name="flowId"
-                      type="radio"
-                      value="0"
-                    />
-                  </label>
-                </td>
-                <td>{{ flow.fromDate }}</td>
-                <td>
-                  <i-tabler
-                    name="Chart-Dots3"
-                    class="text-center text-info"
-                  ></i-tabler>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </ng-container>
-      </div>
-      <ng-container *ngSwitchCase="DataState.ERROR_STATE">
-        <div class="col-md-12 single-note-item text-center">
-          <div class="text-danger" role="status">Error...!</div>
-        </div>
+              ">
+            <tr>
+              <th scope="row">{{ i + 1 }}</th>
+              <td>{{ flow.id }}</td>
+              <td>{{ flow.fromDate }}</td>
+              <td>{{ flow.toDate }}</td>
+              <td>
+                <i-tabler *ngIf="!flow.toDate" name="Subtask" class="text-center text-info"></i-tabler>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="tblMode === TableMode.INSERT">
+            <tr>
+              <td class="text-center">
+                <div class="form-floating mb-3">
+                  <input [(ngModel)]="newWf.fromDate" type="date" class="form-control form-control-sm" id="floatingInput" placeholder="From Date">
+                  <label for="floatingInput">From Date</label>
+                </div>                
+              </td>
+              <td class="text-center">
+                <div class="form-floating mb-3">
+                  <input [(ngModel)]="newWf.toDate" type="date" class="form-control form-control-sm" id="floatingInput" placeholder="To Date">
+                  <label for="floatingInput">To Date</label>
+                </div>                
+              </td>              
+              <td class="text-left">
+                <i-tabler name="device-floppy" class="text-success" (click)="saveNew(newWf)"></i-tabler>
+                <i-tabler name="Hand-Stop" class="text-danger" disabled></i-tabler>
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
       </ng-container>
+    </div>
+    <ng-container *ngSwitchCase="DataState.ERROR_STATE">
+      <div class="col-md-12 single-note-item text-center">
+        <div class="text-danger" role="status">Error...!</div>
+      </div>
     </ng-container>
-  </div>
-  <br />
-  <div></div>
-  
+  </ng-container>
+</div>
+<br />
+<div></div>

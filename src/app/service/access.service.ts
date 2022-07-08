@@ -9,6 +9,7 @@ import { LoginForm } from '../interface/login-form';
 import { UserRole } from '../interface/role';
 import { RoleAccess } from '../interface/role-access';
 import { SystemEntity } from '../interface/system-entity';
+import { WorkFlow } from '../interface/work-flow';
 
 const API = 'http://localhost:8085/api/';
 
@@ -69,6 +70,13 @@ export class AccessService {
   <Observable<CustomResponse>>(
     this.http
       .post<CustomResponse>(`${this.apiUrl}/security/role_access/save`, ra)
+      .pipe(tap(), catchError(this.handleError))
+  );
+
+  saveWorkFlow$ = (wf: WorkFlow) =>
+  <Observable<CustomResponse>>(
+    this.http
+      .post<CustomResponse>(`${this.apiUrl}/work_flow/save`, wf)
       .pipe(tap(), catchError(this.handleError))
   );
 

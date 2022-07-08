@@ -25,6 +25,7 @@ export interface CustomResponse {
     roleAccesses?: RoleAccess[],
     roleAccess?: RoleAccess,
     entities?: SystemEntity[],
+    workFlow?: WorkFlow,
     workFlows?: WorkFlow[],
   };
 }

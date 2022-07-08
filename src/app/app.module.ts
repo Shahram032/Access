@@ -30,7 +30,8 @@ import {
   IconArrowAutofitDown,
   IconStar,
   IconCheck,
-  IconChartDots3
+  IconChartDots3,
+  IconSubtask,
 } from 'angular-tabler-icons/icons';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -85,7 +86,8 @@ const icons = {
   IconArrowAutofitDown,
   IconStar,
   IconCheck,
-  IconChartDots3
+  IconChartDots3,
+  IconSubtask,
 };
 
 @NgModule({
