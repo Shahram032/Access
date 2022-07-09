@@ -31,7 +31,7 @@ export class WorkFlowComponent implements OnInit {
   isLoading$ = this.isLoading.asObservable();
   tblMode: TableMode = TableMode.VIEW;
 
-  newWf: WorkFlow = {}
+  newWf: WorkFlow = {nodeDataArray: []}
 
   ngOnInit(): void {
     this.entity = history.state;
@@ -65,10 +65,12 @@ export class WorkFlowComponent implements OnInit {
     this.appState$ = this.service.saveWorkFlow$(wf).pipe(
       map((response) => {
         this.isLoading.next(false);
+        this.dataSubject = new BehaviorSubject<CustomResponse>(response);
+        /*
         this.dataSubject.next(
           {...response, data: {workFlows: [response.data.workFlow! , ...this.dataSubject.value.data.workFlows!]}}
         );
-
+        */
         this.filterSubject.next(0);
         this.tblMode = TableMode.VIEW;
         return {
@@ -89,4 +91,7 @@ export class WorkFlowComponent implements OnInit {
     
   }
 
+  flowChart(wf: WorkFlow): void {
+    this.router.navigateByUrl('/flow_chart', { state: wf });    
+  }
 }

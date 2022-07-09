@@ -1,4 +1,5 @@
-import { FlowStep } from "./flow-step";
+import { LinkData } from "./link-data";
+import { NodeData } from "./node-data";
 import { SystemEntity } from "./system-entity";
 
 export interface WorkFlow {
@@ -6,5 +7,6 @@ export interface WorkFlow {
     fromDate?: Date;
     toDate?: Date;
     entity?: SystemEntity;
-    steps?: FlowStep[];    
+    nodeDataArray?: NodeData[];
+    linkDataArray?: LinkData[];
 }

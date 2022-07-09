@@ -51,7 +51,7 @@
               <td>{{ flow.fromDate }}</td>
               <td>{{ flow.toDate }}</td>
               <td>
-                <i-tabler *ngIf="!flow.toDate" name="Subtask" class="text-center text-info"></i-tabler>
+                <i-tabler name="Subtask" class="text-center text-info" (click)="flowChart(flow)"></i-tabler>
               </td>
             </tr>
           </tbody>

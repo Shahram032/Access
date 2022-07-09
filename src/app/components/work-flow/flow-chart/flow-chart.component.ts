@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as go from 'gojs';
+import { WorkFlow } from 'src/app/interface/work-flow';
 
 const $ = go.GraphObject.make;
 
@@ -12,9 +13,11 @@ export class FlowChartComponent implements OnInit {
   constructor() {}
   
   myDiagram: go.Diagram = new go.Diagram;
+  public wf: WorkFlow = {};
 
   ngOnInit(): void {
-
+    this.wf = history.state;
+    console.log(this.wf?.fromDate);
     this.myDiagram = $(
       go.Diagram,
       'myDiagramDiv', // must name or refer to the DIV HTML element
@@ -25,6 +28,12 @@ export class FlowChartComponent implements OnInit {
       }
     );
 
+    this.myDiagram.addDiagramListener('ObjectSingleClicked', (e) => {
+      //console.log((e.subject as go.GraphObject).panel);
+      console.log((e.subject as go.GraphObject).panel?.data);
+      //console.log((e.subject as go.GraphObject).name);
+    });
+
     this.myDiagram.addDiagramListener('Modified', (e) => {
       var button = document.getElementById('SaveButton') as HTMLButtonElement;
       if (button) button.disabled = !this.myDiagram.isModified;
@@ -34,7 +43,7 @@ export class FlowChartComponent implements OnInit {
       } else {
         if (idx >= 0) document.title = document.title.slice(0, idx);
       }
-    });
+    });    
 
     this.myDiagram.nodeTemplateMap.add(
       '',
@@ -362,6 +371,15 @@ export class FlowChartComponent implements OnInit {
 
   save() {
     (document.getElementById("mySavedModel")! as HTMLTextAreaElement).value = this.myDiagram.model.toJson();
+    const obj = JSON.parse(this.myDiagram.model.toJson());
+    obj.linkDataArray.forEach((element: any) => {
+      if(!element.pointsStr)
+        element.pointsStr = '';
+      element.pointsStr = element.pointsStr + ',' + element.points
+    });
+    this.wf.nodeDataArray = obj.nodeDataArray;
+    this.wf.linkDataArray = obj.linkDataArray;
+    console.log(obj.linkDataArray.toString());
     this.myDiagram.isModified = false;
   }  
 
