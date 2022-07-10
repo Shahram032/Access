@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import * as go from 'gojs';
+import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
+import { DataState } from 'src/app/enum/data-state.enum';
+import { AppState } from 'src/app/interface/app-state';
+import { CustomResponse } from 'src/app/interface/custom-response';
 import { WorkFlow } from 'src/app/interface/work-flow';
+import { AccessService } from 'src/app/service/access.service';
 
 const $ = go.GraphObject.make;
 
@@ -10,10 +15,16 @@ const $ = go.GraphObject.make;
   styleUrls: ['./flow-chart.component.scss'],
 })
 export class FlowChartComponent implements OnInit {
-  constructor() {}
-  
+
+  private isLoading = new BehaviorSubject<boolean>(false);
+  appState$: Observable<AppState<CustomResponse>> | undefined;
+  isLoading$ = this.isLoading.asObservable();
+  readonly DataState = DataState;
+
+  constructor(private service: AccessService) { }
+
   myDiagram: go.Diagram = new go.Diagram;
-  public wf: WorkFlow = {};
+  wf: WorkFlow = {};
 
   ngOnInit(): void {
     this.wf = history.state;
@@ -43,7 +54,7 @@ export class FlowChartComponent implements OnInit {
       } else {
         if (idx >= 0) document.title = document.title.slice(0, idx);
       }
-    });    
+    });
 
     this.myDiagram.nodeTemplateMap.add(
       '',
@@ -284,9 +295,11 @@ export class FlowChartComponent implements OnInit {
       go.Link.Orthogonal;
 
     //load
-    this.myDiagram.model = go.Model.fromJson(
-      (document.getElementById('mySavedModel') as HTMLTextAreaElement).value
-    );
+    //this.myDiagram.model = go.Model.fromJson(
+    //  (document.getElementById('mySavedModel') as HTMLTextAreaElement).value
+    //);
+
+    this.load();
 
     const myPalette =
       $(go.Palette, "myPaletteDiv",  // must name or refer to the DIV HTML element
@@ -303,7 +316,7 @@ export class FlowChartComponent implements OnInit {
             { category: "End", text: "End" },
             { category: "Comment", text: "Comment" }
           ])
-        });    
+        });
 
   }
 
@@ -366,21 +379,36 @@ export class FlowChartComponent implements OnInit {
   }
 
   load() {
-    this.myDiagram.model = go.Model.fromJson((document.getElementById("mySavedModel")! as HTMLTextAreaElement).value);
+      //this.myDiagram.model = go.Model.fromJson((document.getElementById("mySavedModel")! as HTMLTextAreaElement).value);
+      this.myDiagram.model = go.Model.fromJson(this.wf);
   }
 
   save() {
     (document.getElementById("mySavedModel")! as HTMLTextAreaElement).value = this.myDiagram.model.toJson();
     const obj = JSON.parse(this.myDiagram.model.toJson());
-    obj.linkDataArray.forEach((element: any) => {
-      if(!element.pointsStr)
-        element.pointsStr = '';
-      element.pointsStr = element.pointsStr + ',' + element.points
-    });
     this.wf.nodeDataArray = obj.nodeDataArray;
     this.wf.linkDataArray = obj.linkDataArray;
-    console.log(obj.linkDataArray.toString());
     this.myDiagram.isModified = false;
-  }  
+    this.saveFlow();
+  }
+
+  saveFlow(): void {
+    this.appState$ = this.service.saveWorkFlow$(this.wf).pipe(
+      map((response) => {
+        this.wf = response.data.workFlows![0];
+        return {
+          dataState: DataState.LOADED_STATE,
+        };
+      }),
+      startWith({
+        dataState: DataState.LOADING_STATE,
+      }),
+      catchError(() => {
+        this.myDiagram.isModified = true;
+        return of({ dataState: DataState.ERROR_STATE });
+      })
+    );
+
+  }
 
 }

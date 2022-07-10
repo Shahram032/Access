@@ -4,6 +4,5 @@ export interface LinkData {
     to?: number;
     fromPort?: string;
     toPort?: string;
-    pointsStr?: string;
     points?: number[];
 }
